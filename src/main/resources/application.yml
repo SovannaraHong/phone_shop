@@ -3,7 +3,7 @@ spring:
     name: phoneshop
   datasource:
     url: jdbc:postgresql://localhost:5432/phone_shop
-    username: adminphoneshop
+    username: admin
     password: admin@123
   jpa:
     hibernate:

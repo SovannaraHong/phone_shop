@@ -2,11 +2,15 @@ package com.phone_shop.phoneshop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "brands")
+@EntityListeners(AuditingEntityListener.class)
 public class Brand {
 
     @Id
@@ -14,13 +18,14 @@ public class Brand {
     @Column(name = "brand_id")
     private Integer id;
 
-    // Ensure there are no typos here
-    @Column(name = "brand_name", length = 255)
+
+    @Column(name = "brand_name")
     private String name;
 
-    @Column(name = "from_country", length = 255)
+    @Column(name = "from_country")
     private String country;
 
-    @Column(name = "created_at")
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
     private LocalDate createdAt;
 }
