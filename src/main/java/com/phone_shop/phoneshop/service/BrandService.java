@@ -15,4 +15,6 @@ public interface BrandService {
 
     Brand updateBrand(Integer id, Brand brand); // TODO UPDATE
 
+    void delete(Integer id);
+
 }
