@@ -15,4 +15,8 @@ public interface BrandService {
 
     Brand updateBrand(Integer id, Brand brand); // TODO UPDATE
 
+    Brand getByName(String name);
+
+    void delete(Integer id);
+
 }
