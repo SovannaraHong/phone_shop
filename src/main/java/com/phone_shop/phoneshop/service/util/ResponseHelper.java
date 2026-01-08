@@ -1,4 +1,4 @@
-package com.phone_shop.phoneshop.util;
+package com.phone_shop.phoneshop.service.util;
 
 import com.phone_shop.phoneshop.resource.ResourceData;
 import org.springframework.http.HttpStatus;

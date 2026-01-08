@@ -5,10 +5,13 @@ import com.phone_shop.phoneshop.dto.BrandDto;
 import com.phone_shop.phoneshop.entity.Brand;
 import com.phone_shop.phoneshop.mapper.BrandMapper;
 import com.phone_shop.phoneshop.service.BrandService;
-import com.phone_shop.phoneshop.util.ResponseHelper;
+import com.phone_shop.phoneshop.service.util.ResponseHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/brands")
@@ -36,29 +39,38 @@ public class BrandController {
                 .status(HttpStatus.CREATED)
                 .body(brandMapper.toBrandDto(saved));
     }
-
-
-    @GetMapping("{id}")
-    public ResponseEntity<?> getOne(@PathVariable(name = "id") Integer brandId) {
-        Brand brand = brandService.findById(brandId);
-        return ResponseEntity.ok(brandMapper.toBrandDto(brand));
-    }
+//
+//
+//    @GetMapping("{id}")
+//    public ResponseEntity<?> getOne(@PathVariable(name = "id") Integer brandId) {
+//        Brand brand = brandService.findById(brandId);
+//        return ResponseEntity.ok(brandMapper.toBrandDto(brand));
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<?> getBrands(
+//            @RequestParam(required = false) String brandName
+//    ) {
+//        if (brandName != null) {
+//            Brand brand = brandService.getByName(brandName.toLowerCase());
+//            return ResponseEntity.ok(brandMapper.toBrandDto(brand));
+//        }
+//
+//        return ResponseEntity.ok(
+//                brandService.getBrands()
+//                        .stream()
+//                        .map(brandMapper::toBrandDto)
+//                        .toList()
+//        );
+//    }
 
     @GetMapping
-    public ResponseEntity<?> getBrands(
-            @RequestParam(required = false) String brandName
-    ) {
-        if (brandName != null) {
-            Brand brand = brandService.getByName(brandName.toLowerCase());
-            return ResponseEntity.ok(brandMapper.toBrandDto(brand));
-        }
-
-        return ResponseEntity.ok(
-                brandService.getAllBrand()
-                        .stream()
-                        .map(brandMapper::toBrandDto)
-                        .toList()
-        );
+    public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
+        List<BrandDto> list = brandService.getBrands(params)
+                .stream()
+                .map(brandMapper::toBrandDto)
+                .toList();
+        return ResponseEntity.ok(list);
     }
 
     @PutMapping("{id}")
