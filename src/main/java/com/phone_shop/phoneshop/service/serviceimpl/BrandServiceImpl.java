@@ -1,14 +1,17 @@
-package com.phone_shop.phoneshop.serviceimpl;
+package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.entity.Brand;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.BrandRepository;
 import com.phone_shop.phoneshop.service.BrandService;
+import com.phone_shop.phoneshop.specification.BrandFilter;
+import com.phone_shop.phoneshop.specification.BrandSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,10 +32,31 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Brand> getAllBrand() {
+    public List<Brand> getBrands() {
         return brandRepository.findAll(
                 Sort.by(Sort.Direction.ASC, "id")
         );
+    }
+
+    @Override
+    public List<Brand> getBrands(Map<String, String> params) {
+
+        BrandFilter brandFilter = new BrandFilter();
+        if (params.containsKey("name")) {
+            String name = params.get("name");
+            brandFilter.setName(name);
+        }
+        if (params.containsKey("id")) {
+            String id = params.get("id");
+            brandFilter.setId(Integer.parseInt(id));
+        }
+        if (params.containsKey("country")) {
+            String country = params.get("country");
+            brandFilter.setCountry(country);
+        }
+        BrandSpec brandSpec = new BrandSpec(brandFilter);
+        return brandRepository.findAll(brandSpec);
+
     }
 
     @Override
@@ -44,6 +68,7 @@ public class BrandServiceImpl implements BrandService {
 
 
     }
+
 
     @Override
     public Brand getByName(String name) {
