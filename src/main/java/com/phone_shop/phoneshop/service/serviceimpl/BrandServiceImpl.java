@@ -4,9 +4,12 @@ import com.phone_shop.phoneshop.entity.Brand;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.BrandRepository;
 import com.phone_shop.phoneshop.service.BrandService;
+import com.phone_shop.phoneshop.service.util.PageUtil;
 import com.phone_shop.phoneshop.specification.BrandFilter;
 import com.phone_shop.phoneshop.specification.BrandSpec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +42,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Brand> getBrands(Map<String, String> params) {
+    public Page<Brand> getBrands(Map<String, String> params) {
 
         BrandFilter brandFilter = new BrandFilter();
         if (params.containsKey("name")) {
@@ -54,8 +57,18 @@ public class BrandServiceImpl implements BrandService {
             String country = params.get("country");
             brandFilter.setCountry(country);
         }
+        int pageNumber = PageUtil.DEFAULT_PAGE_NUMBER;
+        int pageLimit = PageUtil.DEFAULT_PAGE_SIZE;
+        if (params.containsKey(PageUtil.DEFAULT_NUMBER)) {
+            pageNumber = Integer.parseInt(params.get(PageUtil.DEFAULT_NUMBER));
+        }
+        if (params.containsKey(PageUtil.DEFAULT_LIMIT)) {
+            pageLimit = Integer.parseInt(params.get(PageUtil.DEFAULT_LIMIT));
+        }
         BrandSpec brandSpec = new BrandSpec(brandFilter);
-        return brandRepository.findAll(brandSpec);
+        Pageable pageable = PageUtil.PAGEABLE(pageNumber, pageLimit);
+
+        return brandRepository.findAll(brandSpec, pageable);
 
     }
 

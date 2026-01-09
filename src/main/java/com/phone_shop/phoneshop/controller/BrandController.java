@@ -2,15 +2,16 @@ package com.phone_shop.phoneshop.controller;
 
 
 import com.phone_shop.phoneshop.dto.BrandDto;
+import com.phone_shop.phoneshop.dto.PageDTO;
 import com.phone_shop.phoneshop.entity.Brand;
 import com.phone_shop.phoneshop.mapper.BrandMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -66,11 +67,14 @@ public class BrandController {
 
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
-        List<BrandDto> list = brandService.getBrands(params)
-                .stream()
-                .map(brandMapper::toBrandDto)
-                .toList();
-        return ResponseEntity.ok(list);
+        Page<Brand> brands = brandService.getBrands(params);
+        PageDTO pageDTO = new PageDTO(brands);
+
+//        List<BrandDto> list = brandService.getBrands(params)
+//                .stream()
+//                .map(brandMapper::toBrandDto)
+//                .toList();
+        return ResponseEntity.ok(pageDTO);
     }
 
     @PutMapping("{id}")
