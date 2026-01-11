@@ -6,6 +6,7 @@ import com.phone_shop.phoneshop.repository.BrandRepository;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.specification.BrandFilter;
 import com.phone_shop.phoneshop.specification.BrandSpec;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
 
 
     @Override
