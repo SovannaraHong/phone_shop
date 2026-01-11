@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.util.PageUtil;
 import com.phone_shop.phoneshop.specification.BrandFilter;
 import com.phone_shop.phoneshop.specification.BrandSpec;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +19,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
 
 
     @Override
