@@ -214,6 +214,10 @@ class BrandServiceTest {
         brand.setName("apple");
         brand.setId(1);
 
+        Brand brande = new Brand();
+        brande.setName("apple");
+        brande.setId(1);
+
         List<Brand> listBrand = List.of(brand);
 
 
