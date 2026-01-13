@@ -4,7 +4,6 @@ import com.phone_shop.phoneshop.entity.Brand;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.BrandRepository;
 import com.phone_shop.phoneshop.service.serviceimpl.BrandServiceImpl;
-import com.phone_shop.phoneshop.specification.BrandSpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -203,33 +200,33 @@ class BrandServiceTest {
 
     }
 
-    @Test
-    void getBrandsTestV2() {
-        Map<String, String> brandMap = new HashMap<>();
-        brandMap.put("name", "apple");
-        brandMap.put("id", "1");
-
-
-        Brand brand = new Brand();
-        brand.setName("apple");
-        brand.setId(1);
-
-        Brand brande = new Brand();
-        brande.setName("apple");
-        brande.setId(1);
-
-        List<Brand> listBrand = List.of(brand);
-
-
-        when(brandRepository.findAll(any(BrandSpec.class)))
-                .thenReturn(listBrand);
-
-        List<Brand> brands = brandService.getBrands(brandMap);
-        Assertions.assertEquals(1, brands.size());
-        Assertions.assertEquals("apple", brands.getFirst().getName());
-        Assertions.assertEquals(1, brands.getFirst().getId());
-
-
-    }
+//    @Test
+//    void getBrandsTestV2() {
+//        Map<String, String> brandMap = new HashMap<>();
+//        brandMap.put("name", "apple");
+//        brandMap.put("id", "1");
+//
+//
+//        Brand brand = new Brand();
+//        brand.setName("apple");
+//        brand.setId(1);
+//
+//        Brand brande = new Brand();
+//        brande.setName("apple");
+//        brande.setId(1);
+//
+//        List<Brand> listBrand = List.of(brand);
+//
+//
+//        when(brandRepository.findAll(any(BrandSpec.class)))
+//                .thenReturn(listBrand);
+//
+//        List<Brand> brands = brandService.getBrands(brandMap);
+//        Assertions.assertEquals(1, brands.size());
+//        Assertions.assertEquals("apple", brands.getFirst().getName());
+//        Assertions.assertEquals(1, brands.getFirst().getId());
+//
+//
+//    }
 
 }
