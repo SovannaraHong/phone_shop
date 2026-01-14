@@ -1,10 +1,13 @@
 package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.entity.Model;
+import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.ModelRepository;
 import com.phone_shop.phoneshop.service.ModelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -17,4 +20,17 @@ public class ModelServiceImpl implements ModelService {
     public Model create(Model model) {
         return modelRepository.save(model);
     }
+
+    @Override
+    public List<Model> getModelByBrandId(Integer id) {
+        return modelRepository.findByBrandId(id);
+    }
+
+    @Override
+    public Model getModelId(Integer id) {
+        return modelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("model", id, "id"));
+    }
+
+
 }
