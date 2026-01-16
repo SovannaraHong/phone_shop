@@ -47,7 +47,7 @@ public class BrandController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable(name = "id") Integer brandId) {
+    public ResponseEntity<?> getById(@PathVariable(name = "id") Long brandId) {
         Brand brand = brandService.findById(brandId);
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
     }
@@ -70,7 +70,7 @@ public class BrandController {
 //    }
 
     @GetMapping("{id}/models")
-    public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Integer brandId) {
+    public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Long brandId) {
         List<Model> modelByBrandId = modelService.getModelByBrandId(brandId);
         List<ModelDTO> list = modelByBrandId.stream().map(modelEntityMapper::toModelDTO).toList();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
@@ -89,14 +89,14 @@ public class BrandController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody BrandDto brandDto) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BrandDto brandDto) {
         Brand brand1 = brandMapper.toBrand(brandDto);
         Brand brand = brandService.updateBrand(id, brand1);
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         brandService.delete(id);
         return ResponseEntity.ok(ResponseHelper.deleteSuccess("brand", id));
     }

@@ -28,7 +28,7 @@ public class ModelController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getModelById(@PathVariable Integer id) {
+    public ResponseEntity<?> getModelById(@PathVariable Long id) {
         Model modelId = modelService.getModelId(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(modelMapper.toModelDTO(modelId));

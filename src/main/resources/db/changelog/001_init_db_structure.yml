@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_init_db_structure
+      author: sovannnaraHong@gmail.com
+      changes:
+        - createTable:
+            tableName: brands
+            columns:
+              - column:
+                  name: brand_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: brand_name
+                  type: VARCHAR(100)
+
+              - column:
+                  name: brand_country
+                  type: VARCHAR(100)
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

@@ -66,7 +66,7 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("apple");
         brand.setCountry("cambodia");
-        brand.setId(1);
+        brand.setId(1L);
 
         when(brandRepository.findByNameContaining("apple")).thenReturn(Optional.of(brand));
         Brand brandReturn = brandService.getByName("apple");
@@ -81,7 +81,7 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("apple");
         brand.setCountry("cambodia");
-        brand.setId(1);
+        brand.setId(1L);
 
 
         when(brandRepository.findByNameContaining("book"))
@@ -95,10 +95,10 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("apple");
         brand.setCountry("cambodia");
-        brand.setId(1);
+        brand.setId(1L);
 
-        when(brandRepository.findById(1)).thenReturn(Optional.of(brand));
-        Brand brandReturn = brandService.findById(1);
+        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+        Brand brandReturn = brandService.findById(1L);
 
         Assertions.assertEquals(1, brandReturn.getId());
         Assertions.assertEquals("apple", brandReturn.getName());
@@ -107,10 +107,10 @@ class BrandServiceTest {
 
     @Test
     void findByIdTestFail() {
-        when(brandRepository.findById(1)).thenReturn(Optional.empty());
+        when(brandRepository.findById(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ResourceNotFoundException.class,
-                () -> brandService.findById(1));
+                () -> brandService.findById(1L));
     }
 
     @Test
@@ -118,20 +118,20 @@ class BrandServiceTest {
         Brand exits = new Brand();
         exits.setName("apple");
         exits.setCountry("cambodia");
-        exits.setId(1);
+        exits.setId(1L);
 
 
         Brand brand = new Brand();
         brand.setName("banana");
         brand.setCountry("italy");
-        brand.setId(1);
+        brand.setId(1L);
 
-        when(brandRepository.findById(1))
+        when(brandRepository.findById(1L))
                 .thenReturn(Optional.of(exits));
         when(brandRepository.save(any(Brand.class)))
                 .thenAnswer(i -> i.getArgument(0));
 
-        Brand brands = brandService.updateBrand(1, brand);
+        Brand brands = brandService.updateBrand(1L, brand);
 
         Assertions.assertEquals(1, brands.getId());
         Assertions.assertEquals("banana", brands.getName());
@@ -146,12 +146,12 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("banana");
         brand.setCountry("italy");
-        brand.setId(2);
-        when(brandRepository.findById(1))
+        brand.setId(2L);
+        when(brandRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(ResourceNotFoundException.class,
-                () -> brandService.updateBrand(1, brand));
+                () -> brandService.updateBrand(1L, brand));
     }
 
     @Test
@@ -159,11 +159,11 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("banana");
         brand.setCountry("italy");
-        brand.setId(2);
+        brand.setId(2L);
 
-        when(brandRepository.findById(2))
+        when(brandRepository.findById(2L))
                 .thenReturn(Optional.of(brand));
-        brandService.delete(2);
+        brandService.delete(2L);
 
         verify(brandRepository, times(1))
                 .delete(brand);
@@ -173,12 +173,12 @@ class BrandServiceTest {
     @Test
     void deleteFail() {
 
-        when(brandRepository.findById(1))
+        when(brandRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
 
         Assertions.assertThrows(ResourceNotFoundException.class,
-                () -> brandService.delete(1));
+                () -> brandService.delete(1L));
 
 
     }
@@ -188,7 +188,7 @@ class BrandServiceTest {
         Brand brand = new Brand();
         brand.setName("banana");
         brand.setCountry("italy");
-        brand.setId(2);
+        brand.setId(2L);
         List<Brand> listBrand = List.of(brand);
 
         when(brandRepository.findAll(Sort.by(Sort.Direction.ASC, "id")))

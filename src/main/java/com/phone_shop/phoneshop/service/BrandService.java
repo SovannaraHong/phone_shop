@@ -11,11 +11,11 @@ import java.util.Map;
 public interface BrandService {
     Brand create(Brand brand);
 
-    Brand findById(Integer id); //TODO CREATE
+    Brand findById(Long id); //TODO CREATE
 
-    void delete(Integer id);
+    void delete(Long id);
 
-    Brand updateBrand(Integer id, Brand brand); // TODO UPDATE
+    Brand updateBrand(Long id, Brand brand); // TODO UPDATE
 
     List<Brand> getBrands(); //TODO GET ALL
 
