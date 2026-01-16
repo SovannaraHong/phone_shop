@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002_insert_brands
+      author: sovannnaraHong@gmail.com
+      changes:
+        - loadData:
+            tableName: brands
+            file: ../data/002_brands.csv
+            relativeToChangelogFile: true
+            separator: "\t"
+            columns:
+              - column:
+                  header: brand_id
+                  name: brand_id
+                  type: NUMERIC
+              - column:
+                  header: brand_name
+                  name: brand_name
+                  type: STRING
+              - column:
+                  header: brand_country
+                  name: brand_country
+                  type: STRING
+              - column:
+                  header: created_at
+                  name: created_at
+                  type: DATE
+        - sql:
+
+            sql: "SELECT setval('brands_brand_id_seq', (SELECT MAX(brand_id) FROM brands));"

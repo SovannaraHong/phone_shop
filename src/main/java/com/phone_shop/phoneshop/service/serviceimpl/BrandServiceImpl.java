@@ -31,7 +31,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Brand findById(Integer id) {
+    public Brand findById(Long id) {
         Optional<Brand> brandId = brandRepository.findById(id);
         return brandId.orElseThrow(() -> new ResourceNotFoundException("brand", id, "id"));
     }
@@ -75,7 +75,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Brand updateBrand(Integer id, Brand brand) {
+    public Brand updateBrand(Long id, Brand brand) {
         Brand byId = findById(id);
         byId.setName(brand.getName());
         byId.setCountry(brand.getCountry());
@@ -95,7 +95,7 @@ public class BrandServiceImpl implements BrandService {
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         Brand brandDel = findById(id);
         brandRepository.delete(brandDel);
     }
