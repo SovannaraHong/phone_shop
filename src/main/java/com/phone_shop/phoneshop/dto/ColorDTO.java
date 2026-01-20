@@ -1,11 +1,9 @@
 package com.phone_shop.phoneshop.dto;
 
+
 import lombok.Data;
 
 @Data
-public class ModelDTO {
-
+public class ColorDTO {
     private String name;
-    private Long brandId;
-
 }
