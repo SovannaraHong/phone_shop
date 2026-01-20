@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003_insert_color
+      author: sovannnaraHong@gmail.com
+      changes:
+        - loadData:
+            tableName: colors
+            file: ../data/003_colors.csv
+            relativeToChangelogFile: true
+            separator: "\t"
+            columns:
+              - column:
+                  header: color_id
+                  name: color_id
+                  type: NUMERIC
+              - column:
+                  header: color_name
+                  name: color_name
+                  type: STRING
+
+        - sql:
+            sql: "SELECT setval('colors_color_id_seq', (SELECT MAX(color_id) FROM colors));"

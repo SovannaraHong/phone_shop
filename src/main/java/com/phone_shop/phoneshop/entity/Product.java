@@ -3,31 +3,36 @@ package com.phone_shop.phoneshop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Data
 @Entity
-@Table(name = "products")
+@Table(name = "products"
+        , uniqueConstraints = {@UniqueConstraint(columnNames = {"model_id", "color_id"})})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
-    @Column(name = "product_name")
+
+
+    @Column(name = "product_name", unique = true)
     private String name;
 
 
     @ManyToOne
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
-    @Column(name = "product_price")
+    @JoinColumn(name = "model_id")
+    private Model model;
 
-    private Double price;
-    @Column(name = "product_quantity")
 
-    private Integer quantity;
-    @Column(name = "product_description")
-    private String description;
-    @Column(name = "product_createAt")
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    private Color color;
 
-    private LocalDate createdAt;
+    @Column(name = "sale_per_product")
+    private BigDecimal salePrice;
+
+    @Column(name = "Stock_product")
+    private Integer unit;
+
 }
