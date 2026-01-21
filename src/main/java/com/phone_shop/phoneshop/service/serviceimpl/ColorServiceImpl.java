@@ -32,4 +32,18 @@ public class ColorServiceImpl implements ColorService {
 
     }
 
+    @Override
+    public Color update(Long id, Color color) {
+        Color colorId = findById(id);
+        colorId.setName(color.getName());
+        return colorRepository.save(colorId);
+
+    }
+
+    @Override
+    public void delete(Long id) {
+        Color colorId = findById(id);
+        colorRepository.delete(colorId);
+    }
+
 }
