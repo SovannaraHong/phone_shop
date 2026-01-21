@@ -25,6 +25,6 @@ public class ProductController {
         Product product = productMapper.toProduct(dto);
         Product products = productService.create(product);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toProductDto(products));
+        return ResponseEntity.status(HttpStatus.CREATED).body(products);
     }
 }

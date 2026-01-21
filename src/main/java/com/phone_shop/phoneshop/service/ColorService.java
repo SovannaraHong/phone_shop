@@ -9,5 +9,9 @@ public interface ColorService {
 
     Color findById(Long id);
 
+    Color update(Long id, Color color);
+
+    void delete(Long id);
+
 
 }
