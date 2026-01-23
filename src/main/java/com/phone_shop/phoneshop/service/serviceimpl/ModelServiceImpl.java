@@ -32,5 +32,11 @@ public class ModelServiceImpl implements ModelService {
                 .orElseThrow(() -> new ResourceNotFoundException("model", id, "id"));
     }
 
+    @Override
+    public Model update(Long id, Model model) {
+        List<Model> modelByBrandId = getModelByBrandId(id);
+        return null;
+    }
+
 
 }
