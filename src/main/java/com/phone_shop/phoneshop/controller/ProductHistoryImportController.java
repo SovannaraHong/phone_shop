@@ -4,6 +4,7 @@ package com.phone_shop.phoneshop.controller;
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import com.phone_shop.phoneshop.service.ProductHistoryImportService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ProductHistoryImportController {
     private final ProductHistoryImportService productHistoryImportService;
 
     @PostMapping
-    public ResponseEntity<?> importProduct(@RequestBody ImportProductDTO dto) {
+    public ResponseEntity<?> importProduct(@Valid @RequestBody ImportProductDTO dto) {
         ProductHistoryImport productHistoryImport = productHistoryImportService.importProduct(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(productHistoryImport);
     }

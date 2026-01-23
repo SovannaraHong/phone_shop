@@ -11,5 +11,7 @@ public interface ModelService {
 
     Model getModelId(Long id);
 
+    Model update(Long id, Model model);
+
 
 }

@@ -25,6 +25,9 @@ databaseChangeLog:
                   header: created_at
                   name: created_at
                   type: DATE
-        - sql:
 
-            sql: "SELECT setval('brands_brand_id_seq', (SELECT MAX(brand_id) FROM brands));"
+#        - sql:
+#
+#            sql: "SELECT setval('brands_brand_id_seq', (SELECT MAX(brand_id) FROM brands))";
+
+

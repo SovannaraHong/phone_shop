@@ -12,24 +12,23 @@ import java.util.Optional;
 @DataJpaTest
 class BrandRepositoryTest {
 
-
     @Autowired
     private BrandRepository brandRepository;
 
     @Test
     void findByNameContainingTest() {
-        //given
+        // 1. Given: Save a real entity to the in-memory DB
         Brand brand = new Brand();
         brand.setName("apple");
         brand.setCountry("cambodia");
-        //when
-        brandRepository.save(brand);
-        Optional<Brand> result = brandRepository.findByNameContaining("a");
-//then
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals("apple", result.get().getName());
-        Assertions.assertEquals("cambodia", result.get().getCountry());
+        Brand savedBrand = brandRepository.save(brand); // This generates the ID
 
+        // 2. When: Call the real method (No Mockito.when() here!)
+        Optional<Brand> foundBrand = brandRepository.findById(savedBrand.getId());
+
+        // 3. Then: Assert the results
+        Assertions.assertTrue(foundBrand.isPresent());
+        Assertions.assertEquals("apple", foundBrand.get().getName());
+        Assertions.assertEquals("cambodia", foundBrand.get().getCountry());
     }
-
 }

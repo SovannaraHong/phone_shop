@@ -18,5 +18,3 @@ databaseChangeLog:
                   name: color_name
                   type: STRING
 
-        - sql:
-            sql: "SELECT setval('colors_color_id_seq', (SELECT MAX(color_id) FROM colors));"
