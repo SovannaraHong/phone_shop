@@ -13,5 +13,7 @@ public interface ModelService {
 
     Model update(Long id, Model model);
 
+    void delete(Long id);
+
 
 }

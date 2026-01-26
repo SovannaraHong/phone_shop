@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 
@@ -28,7 +29,15 @@ public class ProductServiceImpl implements ProductService {
         return productId
                 .orElseThrow(() -> new ResourceNotFoundException("product", id, "id"));
 
-
     }
+
+    @Override
+    public void setSellPrice(Long id, BigDecimal price) {
+        Product productId = findById(id);
+        productId.setSalePrice(price);
+
+        productRepository.save(productId);
+    }
+
 
 }

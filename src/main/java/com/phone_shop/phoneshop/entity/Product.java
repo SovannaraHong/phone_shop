@@ -19,7 +19,8 @@ public class Product {
     @Column(name = "product_name", unique = true)
     private String name;
 
-
+    @Column(name = "image_path")
+    private String imagePath;
     @ManyToOne
     @JoinColumn(name = "model_id")
     private Model model;

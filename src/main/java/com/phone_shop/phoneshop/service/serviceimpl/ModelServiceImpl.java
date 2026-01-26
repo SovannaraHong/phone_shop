@@ -34,8 +34,15 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public Model update(Long id, Model model) {
-        List<Model> modelByBrandId = getModelByBrandId(id);
-        return null;
+        Model modelId = getModelId(id);
+        modelId.setName(model.getName());
+        return modelId;
+    }
+
+    @Override
+    public void delete(Long id) {
+        Model modelId = getModelId(id);
+        modelRepository.delete(modelId);
     }
 
 
