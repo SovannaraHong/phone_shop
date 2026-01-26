@@ -10,6 +10,7 @@ import com.phone_shop.phoneshop.service.ProductHistoryImportService;
 import com.phone_shop.phoneshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ProductImportHistoryImpl implements ProductHistoryImportService {
     private final ProductRepository productRepository;
 
     //TODO improve exception handler
+    @Transactional
     @Override
     public ProductHistoryImport importProduct(ImportProductDTO dto) {
 
