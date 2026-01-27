@@ -4,7 +4,7 @@ package com.phone_shop.phoneshop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,6 +15,6 @@ public class Sale {
     @Column(name = "sale_id")
     private Long id;
     @Column(name = "sold_date")
-    private LocalDate soldDate;
+    private LocalDateTime soldDate;
 
 }

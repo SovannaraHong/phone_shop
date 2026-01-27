@@ -17,9 +17,7 @@ public class ProductHistoryImport {
     @Column(name = "import_unit")
 
     private Integer importUnit;
-    @Column(name = "import_Date")
 
-    private LocalDateTime importDate;
     @Column(name = "import_price_per_unit")
 
     private BigDecimal pricePerUnit;
@@ -27,4 +25,7 @@ public class ProductHistoryImport {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @Column(name = "import_Date")
+
+    private LocalDateTime importDate;
 }
