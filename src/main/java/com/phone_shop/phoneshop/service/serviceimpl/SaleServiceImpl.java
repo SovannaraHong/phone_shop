@@ -23,55 +23,60 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
+
     private final ProductService productService;
     private final ProductRepository productRepository;
-    private final SaleRepository saleRepository;
     private final SaleMapper saleMapper;
+    private final SaleRepository saleRepository;
     private final SaleDetailRepository saleDetailRepository;
 
 
     @Override
     public void sell(SaleDTO saleDTO) {
-        List<Long> productId = saleDTO.getProduct()
-                .stream()
-                .map(ProductSoldDTO::getProductId).toList();
-        //validate sell id
+        //validate id product
+        List<Long> productId = saleDTO.getProduct().stream().map(ProductSoldDTO::getProductId).toList();
         productId.forEach(productService::findById);
         List<Product> products = productRepository.findAllById(productId);
-        Map<Long, Product> productMap = products
-                .stream().collect(Collectors.toMap(Product::getId, Function.identity()));
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
 
         //validate stock
-        saleDTO.getProduct()
-                .forEach(ps -> {
-                    Product product = productMap.get(ps.getProductId());
-                    if (product.getUnit() < ps.getQuantity()) {
-                        throw new ApiException(HttpStatus.BAD_REQUEST, "Product [%s] is not enough"
-                                .formatted(product.getName()));
-                    }
+        //check stock hav enough or not
+        saleDTO.getProduct().forEach(ps -> {
+            Product product = productMap.get(ps.getProductId());
+            if (product.getSalePrice() == null) {
+                throw new ApiException(
+                        HttpStatus.BAD_REQUEST,
+                        "Product [%s] does not have a selling price yet".formatted(product.getName())
+                );
+            }
+            if (product.getUnit() < ps.getQuantity()) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "product [%s] is not enough".formatted(product.getName()));
+            }
 
-                });
+        });
+
         Sale sale = saleMapper.toSale(saleDTO);
         saleRepository.save(sale);
 
-
         saleDTO.getProduct().forEach(ps -> {
-            Product pro = productMap.get(ps.getProductId());
+            Product product = productMap.get(ps.getProductId());
             SaleDetail saleDetail = saleMapper.toSaleDetail(ps);
-            saleDetail.setProduct(pro);
             saleDetail.setSale(sale);
-            BigDecimal amountProduct = pro.getSalePrice().multiply(BigDecimal.valueOf(ps.getQuantity()));
-            saleDetail.setAmount(amountProduct);
+            saleDetail.setProduct(product);
+            BigDecimal amount = product.getSalePrice().multiply(BigDecimal.valueOf(ps.getQuantity()));
+            saleDetail.setAmount(amount);
             saleDetailRepository.save(saleDetail);
-
-
-            Integer availableStock = pro.getUnit() - ps.getQuantity();
-            pro.setUnit(availableStock);
-            productRepository.save(pro);
-
+            saleDetail.setUnitSale(ps.getQuantity());
+            Integer availableStock = product.getUnit() - ps.getQuantity();
+            product.setUnit(availableStock);
+            productRepository.save(product);
         });
+
     }
 }
+

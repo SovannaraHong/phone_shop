@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class SaleController {
+
     private final SaleService saleService;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody SaleDTO saleDTO) {
         saleService.sell(saleDTO);
-        return ResponseEntity.ok("set Sale Price Success");
-
+        return ResponseEntity.ok("Sale Product Success");
     }
 
 }
