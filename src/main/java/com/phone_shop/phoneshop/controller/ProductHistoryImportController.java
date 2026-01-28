@@ -25,4 +25,6 @@ public class ProductHistoryImportController {
         ProductHistoryImport productHistoryImport = productHistoryImportService.importProduct(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(productHistoryImport);
     }
+
+
 }

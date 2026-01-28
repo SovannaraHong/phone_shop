@@ -1,8 +1,10 @@
 package com.phone_shop.phoneshop.mapper;
 
 
+import com.phone_shop.phoneshop.dto.ImportProductDTO;
 import com.phone_shop.phoneshop.dto.ProductDTO;
 import com.phone_shop.phoneshop.entity.Product;
+import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import com.phone_shop.phoneshop.service.ColorService;
 import com.phone_shop.phoneshop.service.ModelService;
 import org.mapstruct.Mapper;
@@ -14,7 +16,11 @@ public interface ProductMapper {
     @Mapping(target = "color", source = "colorId")
     Product toProduct(ProductDTO dto);
 
-    @Mapping(target = "modelId", source = "model.id")
-    @Mapping(target = "colorId", source = "color.id")
-    ProductDTO toProductDto(Product product);
+//    @Mapping(target = "modelId", source = "model.id")
+//    @Mapping(target = "colorId", source = "color.id")
+//    ProductDTO toProductDto(Product product);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    ProductHistoryImport toProduct(ImportProductDTO dto);
 }
