@@ -5,4 +5,5 @@ import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 
 public interface ProductHistoryImportService {
     ProductHistoryImport importProduct(ImportProductDTO dto);
+
 }
