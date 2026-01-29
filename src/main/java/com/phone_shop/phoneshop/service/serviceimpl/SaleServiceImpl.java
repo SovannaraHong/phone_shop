@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.entity.Sale;
 import com.phone_shop.phoneshop.entity.SaleDetail;
 import com.phone_shop.phoneshop.exception.ApiException;
+import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.SaleMapper;
 import com.phone_shop.phoneshop.repository.ProductRepository;
 import com.phone_shop.phoneshop.repository.SaleDetailRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -61,6 +63,7 @@ public class SaleServiceImpl implements SaleService {
         });
 
         Sale sale = saleMapper.toSale(saleDTO);
+        sale.setIsActive(true);
         saleRepository.save(sale);
 
         saleDTO.getProduct().forEach(ps -> {
@@ -78,5 +81,39 @@ public class SaleServiceImpl implements SaleService {
         });
 
     }
+
+    @Override
+    public Sale getById(Long id) {
+        Optional<Sale> saleId = saleRepository.findById(id);
+        return saleId.orElseThrow(() -> new ResourceNotFoundException("sale", id, "id"));
+    }
+
+    @Override
+    public void cancelSale(Long id) {
+        Sale sale = getById(id);
+        if (!sale.getIsActive()) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "Sale id =[%s] already cancel".formatted(id));
+        }
+        sale.setIsActive(false);
+        saleRepository.save(sale);
+
+        List<SaleDetail> saleDetailId = saleDetailRepository.findBySaleId(id);
+        List<Long> productId = saleDetailId
+                .stream()
+                .map(sd -> sd.getProduct().getId()).toList();
+        List<Product> Products = productRepository.findAllById(productId);
+        Map<Long, Product> productMap = Products
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        saleDetailId.forEach(sd -> {
+            Product product = productMap.get(sd.getProduct().getId());
+            product.setUnit(product.getUnit() + sd.getUnitSale());
+            productRepository.save(product);
+        });
+
+    }
+
+
 }
 

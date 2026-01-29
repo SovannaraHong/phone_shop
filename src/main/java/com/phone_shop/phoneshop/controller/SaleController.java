@@ -4,10 +4,7 @@ import com.phone_shop.phoneshop.dto.SaleDTO;
 import com.phone_shop.phoneshop.service.SaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("sales")
 @RestController
@@ -21,5 +18,12 @@ public class SaleController {
         saleService.sell(saleDTO);
         return ResponseEntity.ok("Sale Product Success");
     }
+
+    @PutMapping("{saleId}/cancel")
+    public ResponseEntity<?> create(@PathVariable Long saleId) {
+        saleService.cancelSale(saleId);
+        return ResponseEntity.ok("cancel Product Success");
+    }
+
 
 }
