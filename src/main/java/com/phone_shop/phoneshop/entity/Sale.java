@@ -14,6 +14,8 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sale_id")
     private Long id;
+    @Column(name = "active_Sale")
+    private Boolean IsActive;
     @Column(name = "sold_date")
     private LocalDateTime soldDate;
 
