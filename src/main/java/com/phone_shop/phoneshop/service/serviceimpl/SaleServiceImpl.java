@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,8 +70,7 @@ public class SaleServiceImpl implements SaleService {
             SaleDetail saleDetail = saleMapper.toSaleDetail(ps);
             saleDetail.setSale(sale);
             saleDetail.setProduct(product);
-            BigDecimal amount = product.getSalePrice().multiply(BigDecimal.valueOf(ps.getQuantity()));
-            saleDetail.setAmount(amount);
+            saleDetail.setAmount(product.getSalePrice());
             saleDetailRepository.save(saleDetail);
             saleDetail.setUnitSale(ps.getQuantity());
             Integer availableStock = product.getUnit() - ps.getQuantity();
