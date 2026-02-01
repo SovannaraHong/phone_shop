@@ -15,7 +15,6 @@ public class ProductHistoryImport {
     @Column(name = "import_id")
     private Long id;
     @Column(name = "import_unit")
-
     private Integer importUnit;
 
     @Column(name = "import_price_per_unit")

@@ -1,14 +1,13 @@
-package com.phone_shop.phoneshop.dto;
+package com.phone_shop.phoneshop.dto.reports;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class ProductReportDTO {
-
+public class ExpenseReportDTO {
     private Long productId;
     private String productName;
-    private Integer productUnit;
+    private Integer expenseUnit;
     private BigDecimal totalAmount;
 }
