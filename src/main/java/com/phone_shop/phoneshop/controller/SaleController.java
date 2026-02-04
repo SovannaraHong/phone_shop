@@ -7,8 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("sales")
-@RestController
 @RequiredArgsConstructor
+@RestController
+
 public class SaleController {
 
     private final SaleService saleService;

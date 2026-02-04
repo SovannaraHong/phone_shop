@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RequestMapping("/products")
-@RestController
 @RequiredArgsConstructor
+@RestController
+
 public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
