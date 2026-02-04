@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
 @RequestMapping("/brands")
 @RequiredArgsConstructor
+@RestController
 public class BrandController {
 
 
@@ -50,6 +50,7 @@ public class BrandController {
     public ResponseEntity<?> getById(@PathVariable(name = "id") Long brandId) {
         Brand brand = brandService.findById(brandId);
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
+
     }
 
 //    @GetMapping
@@ -68,6 +69,7 @@ public class BrandController {
 //                        .toList()
 //        );
 //    }
+
 
     @GetMapping("{id}/models")
     public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Long brandId) {
