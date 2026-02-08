@@ -13,42 +13,49 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 public class SecurityConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "index.html", "components/**").permitAll()
+                        .requestMatchers("/", "index.html").permitAll()
                         .requestMatchers("/**").hasRole("ADMIN")
-                        .requestMatchers("/brands/**").hasRole("SALE")
+                        .requestMatchers("/brands").hasRole("STOCKER")
+                        .requestMatchers("/reports/**").hasRole("SALE")
+
                         .anyRequest()
                         .authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
-
-
-        ;
+                .httpBasic(Customizer.withDefaults());
         return http.build();
 
     }
 
     @Bean
+
     public UserDetailsService userDetailsService() {
         UserDetails user1 = User.builder()
-                .username("Sovannara")
+                .username("nara")
                 .password(passwordEncoder.encode("nara123"))
                 .roles("ADMIN")
                 .build();
         UserDetails user2 = User.builder()
-                .username("Thida")
+                .username("thida")
                 .password(passwordEncoder.encode("thida123"))
                 .roles("SALE")
                 .build();
+        UserDetails user3 = User.builder()
+                .username("lyka")
+                .password(passwordEncoder.encode("lyka123"))
+                .roles("STOCKER")
+                .build();
 
-        return new InMemoryUserDetailsManager(user1, user2);
+        return new InMemoryUserDetailsManager(user1, user2, user3);
     }
 }
