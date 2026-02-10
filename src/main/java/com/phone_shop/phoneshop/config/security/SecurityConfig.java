@@ -3,6 +3,7 @@ package com.phone_shop.phoneshop.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,24 +14,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.phone_shop.phoneshop.config.security.Permission.*;
+
 
 @Configuration
 public class SecurityConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "index.html").permitAll()
-                        .requestMatchers("/**").hasRole("ADMIN")
-                        .requestMatchers("/brands").hasRole("STOCKER")
-                        .requestMatchers("/reports/**").hasRole("SALE")
+                                .requestMatchers("/", "index.html").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
+                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())
+                                .requestMatchers(HttpMethod.GET, "/reports/**").hasAuthority(REPORT.getDescription())
+//                                  .requestMatchers("/**").hasRole("ADMIN")
+//                                .requestMatchers("/brands").hasRole("STOCKER")
+//                                .requestMatchers("/reports/**").hasRole("SALE")
 
-                        .anyRequest()
-                        .authenticated()
+                                .anyRequest()
+                                .authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
@@ -43,19 +48,21 @@ public class SecurityConfig {
         UserDetails user1 = User.builder()
                 .username("nara")
                 .password(passwordEncoder.encode("nara123"))
-                .roles("ADMIN")
+                .authorities(Role.ADMIN.getSimpleGrantedAuthority())
+//                .roles("ADMIN")
                 .build();
         UserDetails user2 = User.builder()
                 .username("thida")
                 .password(passwordEncoder.encode("thida123"))
-                .roles("SALE")
+                .authorities(Role.SALE.getSimpleGrantedAuthority())
+//                .roles("SALE")
                 .build();
         UserDetails user3 = User.builder()
                 .username("lyka")
                 .password(passwordEncoder.encode("lyka123"))
-                .roles("STOCKER")
+                .authorities(Role.STOCKER.getSimpleGrantedAuthority())
+//                .roles("STOCKER")
                 .build();
-
         return new InMemoryUserDetailsManager(user1, user2, user3);
     }
 }
