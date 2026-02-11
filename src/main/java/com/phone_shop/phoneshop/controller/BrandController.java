@@ -34,7 +34,7 @@ public class BrandController {
     private final BrandMapper brandMapper;
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
-
+    
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {

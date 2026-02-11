@@ -1,10 +1,12 @@
 package com.phone_shop.phoneshop.config.security;
 
+import com.phone_shop.phoneshop.config.security.jwt.JwtLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +25,14 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authManager);
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/", "index.html").permitAll()
@@ -37,7 +46,9 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .addFilter(jwtLoginFilter);
+
+//                .httpBasic(Customizer.withDefaults());
         return http.build();
 
     }
@@ -66,3 +77,5 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(user1, user2, user3);
     }
 }
+
+
