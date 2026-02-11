@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Generated;
 
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Generated
 public enum Permission {
