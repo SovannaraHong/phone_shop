@@ -1,4 +1,4 @@
-package com.phone_shop.phoneshop.config.security.jwt;
+package com.phone_shop.phoneshop.config.security.auth;
 
 
 import lombok.AllArgsConstructor;
@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
     private String username;
     private String password;
+
 }
