@@ -1,6 +1,7 @@
 package com.phone_shop.phoneshop.config.security;
 
-import com.phone_shop.phoneshop.config.security.jwt.JwtLoginFilter;
+import com.phone_shop.phoneshop.config.security.auth.JwtLoginFilter;
+import com.phone_shop.phoneshop.config.security.auth.TokenVerify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,17 +25,20 @@ public class SecurityConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration auth) throws Exception {
+        return auth.getAuthenticationManager();
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
-        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authManager);
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager) throws Exception {
+
+        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager);
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+
                                 .requestMatchers("/", "index.html").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
                                 .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())
@@ -46,7 +50,9 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .addFilter(jwtLoginFilter);
+                .addFilter(jwtLoginFilter)
+                .addFilterAfter(new TokenVerify(), JwtLoginFilter.class);
+
 
 //                .httpBasic(Customizer.withDefaults());
         return http.build();
