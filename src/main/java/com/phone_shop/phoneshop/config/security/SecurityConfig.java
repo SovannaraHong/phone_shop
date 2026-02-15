@@ -2,28 +2,28 @@ package com.phone_shop.phoneshop.config.security;
 
 import com.phone_shop.phoneshop.config.security.auth.JwtLoginFilter;
 import com.phone_shop.phoneshop.config.security.auth.TokenVerify;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static com.phone_shop.phoneshop.config.security.Permission.*;
 
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
 
     @Bean
@@ -33,10 +33,11 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager, AuthenticationProvider provider) throws Exception {
 
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager);
         http.csrf(AbstractHttpConfigurer::disable)
+                .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
                                 .requestMatchers("/", "index.html").permitAll()
@@ -59,8 +60,17 @@ public class SecurityConfig {
 
     }
 
-    @Bean
 
+    @Bean
+    AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        return daoAuthenticationProvider;
+    }
+
+    /*
+    @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user1 = User.builder()
                 .username("nara")
@@ -82,6 +92,9 @@ public class SecurityConfig {
                 .build();
         return new InMemoryUserDetailsManager(user1, user2, user3);
     }
+    */
+
+
 }
 
 
