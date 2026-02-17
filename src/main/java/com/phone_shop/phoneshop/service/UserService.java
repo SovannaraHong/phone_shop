@@ -1,4 +1,6 @@
-package com.phone_shop.phoneshop.config.security;
+package com.phone_shop.phoneshop.service;
+
+import com.phone_shop.phoneshop.config.security.AuthUser;
 
 import java.util.Optional;
 

@@ -1,5 +1,6 @@
 package com.phone_shop.phoneshop.config.security;
 
+import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

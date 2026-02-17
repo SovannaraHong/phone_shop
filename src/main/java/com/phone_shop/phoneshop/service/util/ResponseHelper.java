@@ -4,6 +4,7 @@ import com.phone_shop.phoneshop.resource.ResourceData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+
 public class ResponseHelper {
     public static ResponseEntity<?> deleteSuccess(String entity, Long id) {
         ResourceData resourceData = new ResourceData(
@@ -12,4 +13,6 @@ public class ResponseHelper {
         );
         return ResponseEntity.ok(resourceData);
     }
+
+
 }
