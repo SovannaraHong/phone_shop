@@ -11,6 +11,7 @@ import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.ModelService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @RequestMapping("/brands")
 @RequiredArgsConstructor
-@RestController
+@RolesAllowed("ROLE_ADMIN")
 public class BrandController {
     //    @Autowired
 //    private BrandService brandService;
