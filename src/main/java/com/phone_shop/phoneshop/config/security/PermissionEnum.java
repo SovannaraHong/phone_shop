@@ -6,7 +6,7 @@ import lombok.Generated;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Generated
-public enum Permission {
+public enum PermissionEnum {
     BRAND_READ("brand:read"),
     BRAND_WRITE("brand:write"),
     MODEL_READ("model:read"),

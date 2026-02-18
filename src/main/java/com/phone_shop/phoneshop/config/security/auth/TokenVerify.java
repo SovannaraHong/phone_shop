@@ -3,7 +3,6 @@ package com.phone_shop.phoneshop.config.security.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,9 +30,10 @@ public class TokenVerify extends OncePerRequestFilter {
             return;
         }
         String token = authorization.replace("Bearer ", "");
-        String secreteKey = "hghsdghowrhoew234sdjhgfskhjgdjfsdkfjlsdhfiwoeytiweuyt4564356455744grgdfk4654lhskdfh35";
+//        String secreteKey = "hghsdghowrhoew234sdjhgfskhjgdjfsdkfjlsdhfiwoeytiweuyt4564356455744grgdfk4654lhskdfh35";
         Jws<Claims> claimsJws = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secreteKey.getBytes()))
+//                .setSigningKey(Keys.hmacShaKeyFor(secreteKey.getBytes()))
+                .setSigningKey(JwtUtil.KEY)
                 .build()
                 .parseClaimsJws(token);
         Claims body = claimsJws.getBody();

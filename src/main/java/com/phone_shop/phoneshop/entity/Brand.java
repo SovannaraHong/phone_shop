@@ -2,16 +2,13 @@ package com.phone_shop.phoneshop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "brands")
 @EntityListeners(AuditingEntityListener.class)
-public class Brand {
+public class Brand extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +23,7 @@ public class Brand {
     @Column(name = "brand_country")
     private String country;
 
-    @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+//    @CreatedDate
+//    @Column(name = "created_at", updatable = false)
+//    private LocalDateTime createdAt;
 }
