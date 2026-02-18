@@ -11,6 +11,7 @@ import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.ModelService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
 @RequestMapping("/brands")
 @RequiredArgsConstructor
+@RolesAllowed("ROLE_ADMIN")
 public class BrandController {
     //    @Autowired
 //    private BrandService brandService;
@@ -49,6 +50,7 @@ public class BrandController {
     public ResponseEntity<?> getById(@PathVariable(name = "id") Long brandId) {
         Brand brand = brandService.findById(brandId);
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
+
     }
 
 //    @GetMapping
@@ -67,6 +69,7 @@ public class BrandController {
 //                        .toList()
 //        );
 //    }
+
 
     @GetMapping("{id}/models")
     public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Long brandId) {
