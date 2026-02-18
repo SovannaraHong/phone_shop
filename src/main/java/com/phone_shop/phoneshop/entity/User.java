@@ -1,8 +1,9 @@
 package com.phone_shop.phoneshop.entity;
 
-import com.phone_shop.phoneshop.config.security.Role;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "Users")
@@ -16,13 +17,15 @@ public class User {
     private String lastName;
     private String username;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    //    @Enumerated(EnumType.STRING)
+//    private RoleEnum roleEnum;
     private String placeOfBirth;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 
 
 }

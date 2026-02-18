@@ -1,4 +1,4 @@
-package com.phone_shop.phoneshop.config.security;
+package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;

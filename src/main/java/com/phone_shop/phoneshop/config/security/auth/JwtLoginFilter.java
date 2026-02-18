@@ -2,7 +2,6 @@ package com.phone_shop.phoneshop.config.security.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,7 +51,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(7)))
                 .setIssuer("phone_shop")
-                .signWith(Keys.hmacShaKeyFor(secreteKey.getBytes()))
+//                .signWith(Keys.hmacShaKeyFor(secreteKey.getBytes()))
+                .signWith(JwtUtil.KEY)
                 .compact();
         response.setHeader("Authorization", "Bearer " + token);
 

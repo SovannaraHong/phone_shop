@@ -11,10 +11,12 @@ import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.ModelService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/brands")
 @RequiredArgsConstructor
+@RolesAllowed("ROLE_ADMIN")
 public class BrandController {
 
 
@@ -34,7 +37,7 @@ public class BrandController {
     private final BrandMapper brandMapper;
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
-    
+
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
@@ -76,6 +79,7 @@ public class BrandController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
         Page<Brand> brands = brandService.getBrands(params);
