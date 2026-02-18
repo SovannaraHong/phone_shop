@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RequestMapping("/products")
-@RestController
 @RequiredArgsConstructor
+@RestController
+
 public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
@@ -27,12 +28,10 @@ public class ProductController {
     public ResponseEntity<?> create(@RequestBody ProductDTO dto) {
         Product product = productMapper.toProduct(dto);
         Product products = productService.create(product);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(products);
     }
 
     @PostMapping("{productId}/setPrice")
-
     public ResponseEntity<?> importPrice(@PathVariable("productId") Long id, @RequestBody PriceDTO priceDTO) {
         productService.setSellPrice(id, priceDTO.getPrice());
         return ResponseEntity.ok("Price updated successfully");

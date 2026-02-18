@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/import")
 @RestController
-
 @RequiredArgsConstructor
 public class ProductHistoryImportController {
     private final ProductHistoryImportService productHistoryImportService;
