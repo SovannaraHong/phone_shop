@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@RestController
 @RequestMapping("/brands")
 @RequiredArgsConstructor
 @RolesAllowed("ROLE_ADMIN")
@@ -38,6 +39,7 @@ public class BrandController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
+
         Brand brand = brandMapper.toBrand(brandDto);
         Brand saved = brandService.create(brand);
         return ResponseEntity

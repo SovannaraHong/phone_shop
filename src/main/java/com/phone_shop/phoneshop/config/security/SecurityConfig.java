@@ -38,11 +38,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager, AuthenticationProvider provider) throws Exception {
 
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager);
+        jwtLoginFilter.setFilterProcessesUrl("/login");
         http.csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html").permitAll()
+                                .requestMatchers("/", "index.html", "/auth/register", "/role/**").permitAll()
 //                                .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/reports/**").hasAuthority(REPORT.getDescription())

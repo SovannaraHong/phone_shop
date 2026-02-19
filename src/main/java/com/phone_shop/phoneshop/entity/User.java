@@ -17,6 +17,9 @@ public class User {
     private String lastName;
     private String username;
     private String password;
+    private String phoneNumber;
+    @Column(name = "image_path")
+    private String imagePath;
     //    @Enumerated(EnumType.STRING)
 //    private RoleEnum roleEnum;
     private String placeOfBirth;
@@ -24,6 +27,7 @@ public class User {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 

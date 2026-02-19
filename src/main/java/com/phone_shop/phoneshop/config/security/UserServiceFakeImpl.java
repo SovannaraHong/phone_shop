@@ -1,5 +1,6 @@
 package com.phone_shop.phoneshop.config.security;
 
+import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,5 +32,15 @@ public class UserServiceFakeImpl implements UserService {
         return authUsers.stream().filter(name -> name.getUsername()
                         .equals(username))
                 .findFirst();
+    }
+
+    @Override
+    public User findById(long id) {
+        return null;
+    }
+
+    @Override
+    public User create(User user) {
+        return null;
     }
 }
