@@ -3,6 +3,7 @@ package com.phone_shop.phoneshop.service.serviceimpl;
 import com.phone_shop.phoneshop.config.security.AuthUser;
 import com.phone_shop.phoneshop.entity.Role;
 import com.phone_shop.phoneshop.entity.User;
+import com.phone_shop.phoneshop.exception.ResourceBadRequestException;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.UserRepository;
 import com.phone_shop.phoneshop.service.UserService;
@@ -38,6 +39,21 @@ public class UserServiceImpl implements UserService {
 
                 .build();
         return Optional.ofNullable(authUser);
+    }
+
+    @Override
+    public User findById(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+    }
+
+    @Override
+    public User create(User user) {
+
+        boolean exists = userRepository.existsByUsername(user.getUsername());
+        if (exists) {
+            throw new ResourceBadRequestException("User", "username", user.getUsername());
+        }
+        return userRepository.save(user);
     }
 
     public Set<SimpleGrantedAuthority> getAuthorities(Set<Role> roles) {

@@ -18,10 +18,12 @@ import java.util.Date;
 
 
 //filter step 1
+//create token
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
+    //Reads username/password from request body
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
@@ -40,6 +42,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     }
+    //If authentication is successful → successfulAuthentication() runs
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
@@ -52,7 +55,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(7)))
                 .setIssuer("phone_shop")
 //                .signWith(Keys.hmacShaKeyFor(secreteKey.getBytes()))
-                .signWith(JwtUtil.KEY)
+                .signWith(JwtUtil.KEY, io.jsonwebtoken.SignatureAlgorithm.HS512)
                 .compact();
         response.setHeader("Authorization", "Bearer " + token);
 
