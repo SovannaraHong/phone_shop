@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.UserMapper;
 import com.phone_shop.phoneshop.repository.RoleRepository;
 import com.phone_shop.phoneshop.service.RoleService;
+import com.phone_shop.phoneshop.service.S3Service;
 import com.phone_shop.phoneshop.service.UserService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +31,7 @@ public class UserController {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final S3Service s3Service;
 
 
     @PostMapping("/register")
@@ -53,6 +57,8 @@ public class UserController {
             });
         }
         user.setRoles(roles);
+
+
         User userResponse = userService.create(user);
 
         UserDTO userDto = userMapper.toUserDTO(userResponse);
@@ -99,4 +105,26 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.ok(ResponseHelper.deleteSuccess("User", id));
     }
+
+    @PostMapping("/{userId}/image")
+    public ResponseEntity<UserDTO> uploadUserImage(
+            @PathVariable Long userId,
+            @RequestPart("image") MultipartFile image) throws IOException {
+
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new ResourceNotFoundException("User", "id", userId);
+        }
+
+        // Upload image to S3
+        String url = s3Service.uploadFile(image, "user_image");
+        user.setImagePath(url);
+
+        // Save updated user
+        User updatedUser = userService.update(userId, user);
+
+        UserDTO responseDto = userMapper.toUserDTO(updatedUser);
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
