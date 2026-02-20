@@ -9,9 +9,12 @@ import com.phone_shop.phoneshop.repository.UserRepository;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<AuthUser> findByUsername(String username) {
@@ -41,28 +45,16 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(authUser);
     }
 
-    @Override
-    public User findById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-    }
-
-    @Override
-    public User create(User user) {
-
-        boolean exists = userRepository.existsByUsername(user.getUsername());
-        if (exists) {
-            throw new ResourceBadRequestException("User", "username", user.getUsername());
-        }
-        return userRepository.save(user);
-    }
-
     public Set<SimpleGrantedAuthority> getAuthorities(Set<Role> roles) {
 
         Set<SimpleGrantedAuthority> grantedAuthorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                 .collect(Collectors.toSet());
 
-        Set<SimpleGrantedAuthority> roleAuthority = roles.stream().flatMap(role -> getPermissionStream(role)).collect(Collectors.toSet());
+        Set<SimpleGrantedAuthority> roleAuthority = roles
+                .stream()
+                .flatMap(role -> getPermissionStream(role))
+                .collect(Collectors.toSet());
         grantedAuthorities.addAll(roleAuthority);
         return grantedAuthorities;
 
@@ -74,5 +66,58 @@ public class UserServiceImpl implements UserService {
                 .map(permission -> new SimpleGrantedAuthority(permission.getName()));
 
     }
+
+    @Override
+    public void delete(long id) {
+        User userId = findById(id);
+        userRepository.delete(userId);
+
+    }
+
+    @Override
+    public User update(long id, User user) {
+        User userId = findById(id);
+        userId.setFirstName(user.getFirstName());
+        userId.setLastName(user.getLastName());
+        userId.setUsername(user.getUsername());
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            userId.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userId.setPhoneNumber(user.getPhoneNumber());
+        userId.setPlaceOfBirth(user.getPlaceOfBirth());
+        userId.setImagePath(user.getImagePath());
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            userId.setRoles(user.getRoles());
+        }
+
+        return userRepository.save(userId);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    @Override
+    public User findByName(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+    }
+
+    @Override
+    public User findById(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+    }
+
+
+    @Override
+    public User create(User user) {
+
+        boolean exists = userRepository.existsByUsername(user.getUsername());
+        if (exists) {
+            throw new ResourceBadRequestException("User", "username", user.getUsername());
+        }
+        return userRepository.save(user);
+    }
+
 
 }

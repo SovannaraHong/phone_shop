@@ -40,7 +40,27 @@ public class UserServiceFakeImpl implements UserService {
     }
 
     @Override
+    public List<User> getUsers() {
+        return List.of();
+    }
+
+    @Override
+    public User findByName(String username) {
+        return null;
+    }
+
+    @Override
     public User create(User user) {
+        return null;
+    }
+
+    @Override
+    public void delete(long id) {
+
+    }
+
+    @Override
+    public User update(long id, User user) {
         return null;
     }
 }

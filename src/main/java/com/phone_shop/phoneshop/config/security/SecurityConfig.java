@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html", "/auth/register", "/role/**").permitAll()
+                                .requestMatchers("/", "index.html", "/auth/register", "/role/**", "/auth/**", "/auth").permitAll()
 //                                .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/reports/**").hasAuthority(REPORT.getDescription())
@@ -72,30 +72,30 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
-    /*
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User.builder()
-                .username("nara")
-                .password(passwordEncoder.encode("nara123"))
-                .authorities(RoleEnum.ADMIN.getSimpleGrantedAuthority())
-//                .roles("ADMIN")
-                .build();
-        UserDetails user2 = User.builder()
-                .username("thida")
-                .password(passwordEncoder.encode("thida123"))
-                .authorities(RoleEnum.SALE.getSimpleGrantedAuthority())
-//                .roles("SALE")
-                .build();
-        UserDetails user3 = User.builder()
-                .username("lyka")
-                .password(passwordEncoder.encode("lyka123"))
-                .authorities(RoleEnum.STOCKER.getSimpleGrantedAuthority())
-//                .roles("STOCKER")
-                .build();
-        return new InMemoryUserDetailsManager(user1, user2, user3);
-    }
-    */
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user1 = User.builder()
+//                .username("nara")
+//                .password(passwordEncoder.encode("nara123"))
+//                .authorities(RoleEnum.ADMIN.getSimpleGrantedAuthority())
+////                .roles("ADMIN")
+//                .build();
+//        UserDetails user2 = User.builder()
+//                .username("thida")
+//                .password(passwordEncoder.encode("thida123"))
+//                .authorities(RoleEnum.SALE.getSimpleGrantedAuthority())
+//                .au
+//
+////                .roles("SALE")
+//                .build();
+//        UserDetails user3 = User.builder()
+//                .username("lyka")
+//                .password(passwordEncoder.encode("lyka123"))
+//                .authorities(RoleEnum.STOCKER.getSimpleGrantedAuthority())
+////                .roles("STOCKER")
+//                .build();
+//        return new InMemoryUserDetailsManager(user1, user2, user3);
+//    }
 
 
 }
