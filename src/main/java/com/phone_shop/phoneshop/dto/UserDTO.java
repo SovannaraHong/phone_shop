@@ -12,5 +12,6 @@ public class UserDTO {
     private String password;
     private String phoneNumber;
     private Set<Long> rolesId;
+    private String imagePath;
 
 }
