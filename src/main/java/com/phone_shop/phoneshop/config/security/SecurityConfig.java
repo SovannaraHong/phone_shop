@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                                 .requestMatchers("/", "index.html", "/auth/register", "/role/**", "/auth/**", "/auth").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority("SALE")
 //                                .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/reports/**").hasAuthority(REPORT.getDescription())

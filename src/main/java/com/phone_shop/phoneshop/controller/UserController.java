@@ -34,35 +34,41 @@ public class UserController {
     private final S3Service s3Service;
 
 
+    //    @PostMapping("/register")
+//    public ResponseEntity<?> signIn(@RequestBody UserDTO userDTO) {
+//
+//        userDTO.getRolesId()
+//                .stream()
+//                .map(roleId -> roleRepository.findById(roleId)
+//                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", roleId)));
+//        User user = userMapper.toUser(userDTO);
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setAccountNonExpired(true);
+//        user.setAccountNonLocked(true);
+//        user.setCredentialsNonExpired(true);
+//        user.setEnabled(true);
+//
+//
+//        Set<Role> roles = new HashSet<>();
+//        if (userDTO.getRolesId() != null) {
+//            userDTO.getRolesId().forEach(id -> {
+//
+//                roles.add(roleService.findById(id));
+//            });
+//        }
+//        user.setRoles(roles);
+//
+//
+//        User userResponse = userService.create(user);
+//
+//        UserDTO userDto = userMapper.toUserDTO(userResponse);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+//
+//    }
     @PostMapping("/register")
     public ResponseEntity<?> signIn(@RequestBody UserDTO userDTO) {
-
-        userDTO.getRolesId()
-                .stream()
-                .map(roleId -> roleRepository.findById(roleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", roleId)));
-        User user = userMapper.toUser(userDTO);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
-
-
-        Set<Role> roles = new HashSet<>();
-        if (userDTO.getRolesId() != null) {
-            userDTO.getRolesId().forEach(id -> {
-
-                roles.add(roleService.findById(id));
-            });
-        }
-        user.setRoles(roles);
-
-
-        User userResponse = userService.create(user);
-
-        UserDTO userDto = userMapper.toUserDTO(userResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+        User user = userService.createV1(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
 
     }
 

@@ -1,5 +1,6 @@
 package com.phone_shop.phoneshop.config.security;
 
+import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,11 @@ public class UserServiceFakeImpl implements UserService {
 
     @Override
     public User create(User user) {
+        return null;
+    }
+
+    @Override
+    public User createV1(UserDTO userDTO) {
         return null;
     }
 

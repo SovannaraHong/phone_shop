@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import java.util.List;
 public class ReportController {
     private final ReportService reportService;
 
+    @PreAuthorize("hasAnyAuthority('report')")
+
     @GetMapping("{startDate}/{endDate}")
     public ResponseEntity<?> productReport(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @PathVariable LocalDateTime startDate,
@@ -31,6 +34,7 @@ public class ReportController {
         return ResponseEntity.ok(list);
     }
 
+    @PreAuthorize("hasAnyAuthority('report')")
     @GetMapping("expense/{startDate}/{endDate}")
     public ResponseEntity<?> expenseReport(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate startDate,
@@ -39,4 +43,5 @@ public class ReportController {
         return ResponseEntity.ok(expenseReportDTOS);
 
     }
+
 }
