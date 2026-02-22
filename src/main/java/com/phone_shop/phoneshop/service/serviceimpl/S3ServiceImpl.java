@@ -37,6 +37,6 @@ public class S3ServiceImpl implements S3Service {
         s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
 
         // Generate URL (public access requires bucket policy)
-        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
+        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + key;
     }
 }

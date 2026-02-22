@@ -1,7 +1,6 @@
 package com.phone_shop.phoneshop.controller;
 
 import com.phone_shop.phoneshop.dto.UserDTO;
-import com.phone_shop.phoneshop.entity.Role;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.UserMapper;
@@ -10,6 +9,7 @@ import com.phone_shop.phoneshop.service.RoleService;
 import com.phone_shop.phoneshop.service.S3Service;
 import com.phone_shop.phoneshop.service.UserService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,35 +32,41 @@ public class UserController {
     private final S3Service s3Service;
 
 
+    //    @PostMapping("/register")
+//    public ResponseEntity<?> signIn(@RequestBody UserDTO userDTO) {
+//
+//        userDTO.getRolesId()
+//                .stream()
+//                .map(roleId -> roleRepository.findById(roleId)
+//                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", roleId)));
+//        User user = userMapper.toUser(userDTO);
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setAccountNonExpired(true);
+//        user.setAccountNonLocked(true);
+//        user.setCredentialsNonExpired(true);
+//        user.setEnabled(true);
+//
+//
+//        Set<Role> roles = new HashSet<>();
+//        if (userDTO.getRolesId() != null) {
+//            userDTO.getRolesId().forEach(id -> {
+//
+//                roles.add(roleService.findById(id));
+//            });
+//        }
+//        user.setRoles(roles);
+//
+//
+//        User userResponse = userService.create(user);
+//
+//        UserDTO userDto = userMapper.toUserDTO(userResponse);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+//
+//    }
     @PostMapping("/register")
-    public ResponseEntity<?> signIn(@RequestBody UserDTO userDTO) {
-
-        userDTO.getRolesId()
-                .stream()
-                .map(roleId -> roleRepository.findById(roleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", roleId)));
-        User user = userMapper.toUser(userDTO);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
-
-
-        Set<Role> roles = new HashSet<>();
-        if (userDTO.getRolesId() != null) {
-            userDTO.getRolesId().forEach(id -> {
-
-                roles.add(roleService.findById(id));
-            });
-        }
-        user.setRoles(roles);
-
-
-        User userResponse = userService.create(user);
-
-        UserDTO userDto = userMapper.toUserDTO(userResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+    public ResponseEntity<?> signIn(@Valid @RequestBody UserDTO userDTO) {
+        User user = userService.createV1(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
 
     }
 
@@ -79,19 +83,10 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        User user = userService.findById(id);
-        Set<Role> roles = new HashSet<>();
-        if (userDTO.getRolesId() != null && !userDTO.getRolesId().isEmpty()) {
-            userDTO.getRolesId().forEach(roleId -> {
-                Role role = roleService.findById(roleId);
-                roles.add(role);
-            });
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
 
-        }
-        user.setRoles(roles);
-        User update = userService.update(id, user);
-        return ResponseEntity.status(HttpStatus.OK).body(userMapper.toUserDTO(update));
+        User user = userService.update(id, userDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userMapper.toUserDTO(user));
     }
 
     @GetMapping("/name/{username}")
@@ -107,11 +102,12 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/image")
-    public ResponseEntity<UserDTO> uploadUserImage(
+    public ResponseEntity<?> uploadUserImage(
             @PathVariable Long userId,
             @RequestPart("image") MultipartFile image) throws IOException {
 
         User user = userService.findById(userId);
+
         if (user == null) {
             throw new ResourceNotFoundException("User", "id", userId);
         }
@@ -121,8 +117,7 @@ public class UserController {
         user.setImagePath(url);
 
         // Save updated user
-        User updatedUser = userService.update(userId, user);
-
+        User updatedUser = userService.update(userId, userMapper.toUserDTO(user));
         UserDTO responseDto = userMapper.toUserDTO(updatedUser);
         return ResponseEntity.ok(responseDto);
     }

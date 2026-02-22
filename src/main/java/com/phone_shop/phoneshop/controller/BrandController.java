@@ -36,7 +36,7 @@ public class BrandController {
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
 
-
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
 
@@ -47,7 +47,7 @@ public class BrandController {
                 .body(brandMapper.toBrandDto(saved));
     }
 
-
+    @PreAuthorize("hasAnyAuthority('brand:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable(name = "id") Long brandId) {
         Brand brand = brandService.findById(brandId);
@@ -72,7 +72,7 @@ public class BrandController {
 //        );
 //    }
 
-
+    @PreAuthorize("hasAnyAuthority('brand:read')")
     @GetMapping("{id}/models")
     public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Long brandId) {
         List<Model> modelByBrandId = modelService.getModelByBrandId(brandId);
@@ -80,7 +80,7 @@ public class BrandController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
-    @PreAuthorize("hasAnyAuthority('brand:write')")
+    @PreAuthorize("hasAnyAuthority('brand:read')")
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
         Page<Brand> brands = brandService.getBrands(params);
@@ -93,6 +93,7 @@ public class BrandController {
         return ResponseEntity.ok(pageDTO);
     }
 
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BrandDto brandDto) {
         Brand brand1 = brandMapper.toBrand(brandDto);
@@ -100,6 +101,7 @@ public class BrandController {
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
     }
 
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         brandService.delete(id);

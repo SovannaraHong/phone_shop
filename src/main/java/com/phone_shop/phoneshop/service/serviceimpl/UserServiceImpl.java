@@ -1,11 +1,15 @@
 package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.config.security.AuthUser;
+import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.Role;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.exception.ResourceBadRequestException;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
+import com.phone_shop.phoneshop.mapper.UserMapper;
+import com.phone_shop.phoneshop.repository.RoleRepository;
 import com.phone_shop.phoneshop.repository.UserRepository;
+import com.phone_shop.phoneshop.service.RoleService;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -14,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -26,6 +31,9 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
+    private final RoleService roleService;
 
     @Override
     public Optional<AuthUser> findByUsername(String username) {
@@ -75,23 +83,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long id, User user) {
+    public User update(long id, UserDTO userDTO) {
         User userId = findById(id);
-        userId.setFirstName(user.getFirstName());
-        userId.setLastName(user.getLastName());
-        userId.setUsername(user.getUsername());
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            userId.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        userId.setPhoneNumber(user.getPhoneNumber());
-        userId.setPlaceOfBirth(user.getPlaceOfBirth());
-        userId.setImagePath(user.getImagePath());
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            userId.setRoles(user.getRoles());
-        }
+        userId.setFirstName(userDTO.getFirstName());
+        userId.setLastName(userDTO.getLastName());
+        userId.setUsername(userDTO.getUsername());
+        userId.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userId.setPhoneNumber(userDTO.getPhoneNumber());
+        userId.setPlaceOfBirth(userDTO.getPlaceOfBirth());
 
+        Set<Role> role = userDTO.getRolesId().stream()
+                .map(roleService::findById)
+                .collect(Collectors.toSet());
+        userId.setRoles(role);
         return userRepository.save(userId);
+
     }
+
 
     @Override
     public List<User> getUsers() {
@@ -111,11 +119,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-
         boolean exists = userRepository.existsByUsername(user.getUsername());
         if (exists) {
-            throw new ResourceBadRequestException("User", "username", user.getUsername());
+            throw new ResourceBadRequestException("User", "username", user.getUsername(), "User already exists");
         }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User createV1(UserDTO userDTO) {
+
+        userDTO.getRolesId().stream().map(role ->
+                roleRepository
+                        .findById(role)
+                        .orElseThrow(() -> new ResourceNotFoundException("Role", "id", role))
+        );
+
+        User user = userMapper.toUser(userDTO);
+        boolean exists = userRepository.existsByUsername(user.getUsername());
+        if (exists) {
+            throw new ResourceBadRequestException("User", "username", user.getUsername(), "User already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+
+        Set<Role> roles = new HashSet<>();
+        if (userDTO.getRolesId() != null || userDTO.getRolesId().isEmpty()) {
+            userDTO.getRolesId().forEach(roleId -> {
+                roles.add(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role", "id", roleId)));
+            });
+        }
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 
