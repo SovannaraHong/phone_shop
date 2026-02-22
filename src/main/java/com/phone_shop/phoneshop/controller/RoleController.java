@@ -5,6 +5,7 @@ import com.phone_shop.phoneshop.entity.Role;
 import com.phone_shop.phoneshop.mapper.RoleMapper;
 import com.phone_shop.phoneshop.service.RoleService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.OK).body(roleId);
 
     }
-
+    
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         Role role = roleService.findByName(name);
@@ -40,7 +41,7 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody RoleDTO roleDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody RoleDTO roleDTO) {
 
         Role roles = roleService.create(roleDTO);
 

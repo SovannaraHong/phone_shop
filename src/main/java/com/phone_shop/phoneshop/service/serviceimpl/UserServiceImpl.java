@@ -9,6 +9,7 @@ import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.UserMapper;
 import com.phone_shop.phoneshop.repository.RoleRepository;
 import com.phone_shop.phoneshop.repository.UserRepository;
+import com.phone_shop.phoneshop.service.RoleService;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
+    private final RoleService roleService;
 
     @Override
     public Optional<AuthUser> findByUsername(String username) {
@@ -81,23 +83,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long id, User user) {
+    public User update(long id, UserDTO userDTO) {
         User userId = findById(id);
-        userId.setFirstName(user.getFirstName());
-        userId.setLastName(user.getLastName());
-        userId.setUsername(user.getUsername());
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            userId.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        userId.setPhoneNumber(user.getPhoneNumber());
-        userId.setPlaceOfBirth(user.getPlaceOfBirth());
-        userId.setImagePath(user.getImagePath());
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            userId.setRoles(user.getRoles());
-        }
+        userId.setFirstName(userDTO.getFirstName());
+        userId.setLastName(userDTO.getLastName());
+        userId.setUsername(userDTO.getUsername());
+        userId.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userId.setPhoneNumber(userDTO.getPhoneNumber());
+        userId.setPlaceOfBirth(userDTO.getPlaceOfBirth());
 
+        Set<Role> role = userDTO.getRolesId().stream()
+                .map(roleService::findById)
+                .collect(Collectors.toSet());
+        userId.setRoles(role);
         return userRepository.save(userId);
+
     }
+
 
     @Override
     public List<User> getUsers() {

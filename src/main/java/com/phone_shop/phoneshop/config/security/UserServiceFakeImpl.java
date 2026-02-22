@@ -66,7 +66,9 @@ public class UserServiceFakeImpl implements UserService {
     }
 
     @Override
-    public User update(long id, User user) {
+    public User update(long id, UserDTO userDTO) {
         return null;
     }
+
+
 }

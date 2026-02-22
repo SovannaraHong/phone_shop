@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,9 +45,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role create(RoleDTO roledto) {
 
-        if (Objects.isNull(roledto.getName()) || roledto.getName().isEmpty()) {
-            throw new ResourceBadRequestException("Role", "name", roledto.getName(), "is invalid");
-        }
+//        if (Objects.isNull(roledto.getName()) || roledto.getName().isEmpty()) {
+//            throw new ResourceBadRequestException("Role", "name", roledto.getName(), "is invalid");
+//        }
 
         if (roledto.getPermissions() == null || roledto.getPermissions().isEmpty()) {
             throw new ResourceBadRequestException("Role", "permissions", roledto.getPermissions(), "is invalid");

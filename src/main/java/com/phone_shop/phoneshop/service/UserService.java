@@ -24,6 +24,8 @@ public interface UserService {
     void delete(long id);
 
     //TODO IMPROVE VALIDATION
-    User update(long id, User user);
+    User update(long id, UserDTO userDTO);
+
+//    User update(long id, User user);
 
 }

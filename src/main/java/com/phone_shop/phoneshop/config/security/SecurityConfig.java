@@ -43,7 +43,10 @@ public class SecurityConfig {
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html", "/auth/register", "/role/**", "/auth/**", "/auth").permitAll()
+                                .requestMatchers("/", "index.html", "/auth/register", "/role/**", "/auth/**", "/auth", "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/webjars/**").permitAll()
 //                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority("SALE")
 //                                .requestMatchers(HttpMethod.POST, "/brands").hasAuthority(BRAND_WRITE.getDescription())
 //                                .requestMatchers(HttpMethod.GET, "/models/**").hasAuthority(MODEL_READ.getDescription())

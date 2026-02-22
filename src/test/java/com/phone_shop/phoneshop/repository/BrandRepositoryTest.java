@@ -24,7 +24,6 @@ class BrandRepositoryTest {
 
         // 2. When: Call the real method (No Mockito.when() here!)
         Optional<Brand> foundBrand = brandRepository.findById(savedBrand.getId());
-
         // 3. Then: Assert the results
         Assertions.assertTrue(foundBrand.isPresent());
         Assertions.assertEquals("apple", foundBrand.get().getName());
