@@ -7,6 +7,7 @@ import com.phone_shop.phoneshop.dto.ProductDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.mapper.ProductMapper;
 import com.phone_shop.phoneshop.service.ProductService;
+import com.phone_shop.phoneshop.service.util.ResponseHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,18 +25,46 @@ public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
 
+    @GetMapping
+    public ResponseEntity<?> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(id));
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductByName(name));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(ResponseHelper.deleteSuccess("Product", id));
+    }
+
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ProductDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody ProductDTO dto) {
         Product product = productMapper.toProduct(dto);
         Product products = productService.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(products);
     }
 
     @PostMapping("{productId}/setPrice")
-    public ResponseEntity<?> importPrice(@PathVariable("productId") Long id, @RequestBody PriceDTO priceDTO) {
+    public ResponseEntity<?> importPrice(@PathVariable("productId") Long id, @Valid @RequestBody PriceDTO priceDTO) {
         productService.setSellPrice(id, priceDTO.getPrice());
         return ResponseEntity.ok("Price updated successfully");
 
+
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
+        Product product = productService.updateProduct(dto, id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
 
     }
 

@@ -1,9 +1,11 @@
 package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
+import com.phone_shop.phoneshop.dto.ProductDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import com.phone_shop.phoneshop.exception.ApiException;
+import com.phone_shop.phoneshop.exception.ResourceBadRequestException;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.ProductMapper;
 import com.phone_shop.phoneshop.repository.ProductHistoryImportRepository;
@@ -22,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -36,8 +35,60 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+
+    }
+
+    @Override
+    public Product getProductByName(String name) {
+        return productRepository.findProductByName(name).orElseThrow(() -> new ResourceNotFoundException("Product", "name", name));
+    }
+
+    @Override
+    public Product updateProduct(ProductDTO productDTO, Long id) {
+        Product productId = findById(id);
+
+        Product product = productMapper.toProduct(productDTO);
+        if (productRepository.existsByModelAndColor(product.getModel(), product.getColor())) {
+            throw new ResourceBadRequestException(
+                    "Product",
+                    "ModelId and ColorId",
+                    "%s-%s".formatted(product.getModel().getId(), product.getColor().getId()),
+                    "Product with this model and color already exists"
+            );
+        }
+        productId.setModel(product.getModel());
+        productId.setColor(product.getColor());
+        return productRepository.save(productId);
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        Product productId = findById(id);
+        productRepository.delete(productId);
+    }
+
+    @Override
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+
+    }
+
+    //TODO VALIDATE
+    @Override
     public Product create(Product product) {
+        if (productRepository.existsByModelAndColor(product.getModel(), product.getColor())) {
+            throw new ResourceBadRequestException(
+                    "Product",
+                    "ModelId and ColorId",
+                    "%s-%s".formatted(product.getModel().getId(), product.getColor().getId()),
+                    "Product with this model and color already exists"
+            );
+        }
+
         String name = "%s %s".formatted(product.getModel().getName(), product.getColor().getName());
+
         product.setName(name);
         return productRepository.save(product);
     }

@@ -49,9 +49,7 @@ public class RoleServiceImpl implements RoleService {
 //            throw new ResourceBadRequestException("Role", "name", roledto.getName(), "is invalid");
 //        }
 
-        if (roledto.getPermissions() == null || roledto.getPermissions().isEmpty()) {
-            throw new ResourceBadRequestException("Role", "permissions", roledto.getPermissions(), "is invalid");
-        }
+
         if (roleRepository.existsByName(roledto.getName())) {
             throw new ResourceBadRequestException("Role", "name", roledto.getName(), " name already exists");
         }
@@ -76,14 +74,12 @@ public class RoleServiceImpl implements RoleService {
     public Role update(Long id, RoleDTO roleDTO) {
         Role byId = findById(id);
 
-        if (roleDTO.getPermissions() != null || !roleDTO.getPermissions().isEmpty()) {
-            Set<Permission> permissions = roleDTO.getPermissions().stream().map(permissionName ->
-                            permissionRepository
-                                    .findByName(permissionName)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Permission", "name", permissionName)))
-                    .collect(Collectors.toSet());
-            byId.setPermissions(permissions);
-        }
+        Set<Permission> permissions = roleDTO.getPermissions().stream().map(permissionName ->
+                        permissionRepository
+                                .findByName(permissionName)
+                                .orElseThrow(() -> new ResourceNotFoundException("Permission", "name", permissionName)))
+                .collect(Collectors.toSet());
+        byId.setPermissions(permissions);
         return roleRepository.save(byId);
     }
 

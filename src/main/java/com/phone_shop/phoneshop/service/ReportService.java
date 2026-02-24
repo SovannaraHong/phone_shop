@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReportService {
+    //TODO REPORT SALE
     List<ProductReportDTO> productReportSold(LocalDateTime startDate, LocalDateTime endDate);
 
     List<ExpenseReportDTO> expenseReport(LocalDate startDate, LocalDate endDate);
