@@ -9,6 +9,7 @@ public interface SaleService {
 
     Sale getById(Long id);
 
+
     void cancelSale(Long id);
 
 }

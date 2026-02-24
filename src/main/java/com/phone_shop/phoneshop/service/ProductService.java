@@ -1,16 +1,29 @@
 package com.phone_shop.phoneshop.service;
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
+import com.phone_shop.phoneshop.dto.ProductDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface ProductService {
+    Product getProductById(Long id);
+
+    Product getProductByName(String name);
+
+    Product updateProduct(ProductDTO productDTO, Long id);
+
+    void deleteProduct(Long id);
+
+    List<Product> getProducts();
+
     Product create(Product product);
 
     Product findById(Long id);
+
 
     void setSellPrice(Long id, BigDecimal price);
 
