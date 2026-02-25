@@ -6,6 +6,7 @@ import com.phone_shop.phoneshop.entity.Model;
 import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.ModelService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ModelController {
     @PreAuthorize("hasAnyAuthority('model:write')")
     //TODO IMPROVE FUNCTION
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ModelDTO modelDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody ModelDTO modelDTO) {
         Model model = modelMapper.toModel(modelDTO);
         model = modelService.create(model);
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
@@ -37,10 +38,21 @@ public class ModelController {
                 .body(modelMapper.toModelDTO(modelId));
     }
 
-    @PreAuthorize("hasAnyAuthority('model:write')")
+    @PreAuthorize("hasAnyAuthority('model:read')")
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> getModelByName(@PathVariable String name) {
+        return ResponseEntity.ok().body(modelService.getModelByName(name));
+    }
 
-    @PutMapping
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ModelDTO modelDTO) {
+    @PreAuthorize("hasAnyAuthority('model:read')")
+    @GetMapping()
+    public ResponseEntity<?> getModels() {
+        return ResponseEntity.ok().body(modelService.getModels());
+    }
+
+    @PreAuthorize("hasAnyAuthority('model:write')")
+    @PutMapping("{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ModelDTO modelDTO) {
         Model model = modelMapper.toModel(modelDTO);
         Model modelUpdate = modelService.update(id, model);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(modelUpdate);

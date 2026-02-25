@@ -9,6 +9,10 @@ public interface ModelService {
 
     List<Model> getModelByBrandId(Long id);
 
+    List<Model> getModels();
+
+    Model getModelByName(String name);
+
     Model getModelId(Long id);
 
     Model update(Long id, Model model);

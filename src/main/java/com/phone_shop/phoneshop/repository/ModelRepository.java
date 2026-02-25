@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface ModelRepository extends JpaRepository<Model, Long> {
     List<Model> findByBrandId(Long id);
+
+    boolean existsByName(String name);
+
+    Model findByName(String name);
 }
