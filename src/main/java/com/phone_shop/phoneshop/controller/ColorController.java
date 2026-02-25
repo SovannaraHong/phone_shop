@@ -32,6 +32,16 @@ public class ColorController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(colorDTO);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllColors() {
+        return ResponseEntity.ok().body(colorService.getColors());
+    }
+
+    @GetMapping("name/{name}")
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+        return ResponseEntity.ok().body(colorService.findByName(name));
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ColorDTO dto) {
         Color color = colorMapper.toColor(dto);
