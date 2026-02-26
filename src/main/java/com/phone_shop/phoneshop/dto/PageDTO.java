@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Data
-public class PageDTO {
-    private List<?> list;
+public class PageDTO<T> {
+
+    private List<T> list;
     private PaginationDTO paginationDTO;
 
-    public PageDTO(Page<?> page) {
+    public PageDTO(Page<T> page) {
         this.list = page.getContent();
         this.paginationDTO = PaginationDTO.builder()
                 .empty(page.isEmpty())
@@ -22,8 +23,5 @@ public class PageDTO {
                 .totalElements(page.getTotalElements())
                 .totalPage(page.getTotalPages())
                 .build();
-
-
     }
-
 }

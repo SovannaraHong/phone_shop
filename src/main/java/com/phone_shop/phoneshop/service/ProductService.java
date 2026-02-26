@@ -2,7 +2,9 @@ package com.phone_shop.phoneshop.service;
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
 import com.phone_shop.phoneshop.dto.ProductDTO;
+import com.phone_shop.phoneshop.dto.ProductResponseDTO;
 import com.phone_shop.phoneshop.entity.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -19,6 +21,8 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     List<Product> getProducts();
+
+    Page<ProductResponseDTO> getProducts(Map<String, String> params);
 
     Product create(Product product);
 

@@ -59,16 +59,18 @@ public class BrandServiceImpl implements BrandService {
             String country = params.get("country");
             brandFilter.setCountry(country);
         }
-        int pageNumber = PageUtil.DEFAULT_PAGE_NUMBER;
-        int pageLimit = PageUtil.DEFAULT_PAGE_SIZE;
-        if (params.containsKey(PageUtil.DEFAULT_NUMBER)) {
-            pageNumber = Integer.parseInt(params.get(PageUtil.DEFAULT_NUMBER));
-        }
-        if (params.containsKey(PageUtil.DEFAULT_LIMIT)) {
-            pageLimit = Integer.parseInt(params.get(PageUtil.DEFAULT_LIMIT));
-        }
+//        int pageNumber = PageUtil.DEFAULT_PAGE_NUMBER;
+//        int pageLimit = PageUtil.DEFAULT_PAGE_SIZE;
+//        if (params.containsKey(PageUtil.DEFAULT_NUMBER)) {
+//            pageNumber = Integer.parseInt(params.get(PageUtil.DEFAULT_NUMBER));
+//        }
+//        if (params.containsKey(PageUtil.DEFAULT_LIMIT)) {
+//            pageLimit = Integer.parseInt(params.get(PageUtil.DEFAULT_LIMIT));
+//        }
+//        BrandSpec brandSpec = new BrandSpec(brandFilter);
+//        Pageable pageable = PageUtil.PAGEABLE(pageNumber, pageLimit);
         BrandSpec brandSpec = new BrandSpec(brandFilter);
-        Pageable pageable = PageUtil.PAGEABLE(pageNumber, pageLimit);
+        Pageable pageable = PageUtil.getPageable(params);
 
         return brandRepository.findAll(brandSpec, pageable);
 

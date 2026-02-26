@@ -2,6 +2,9 @@ package com.phone_shop.phoneshop.service.util;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.Map;
 
 public interface PageUtil {
 
@@ -19,6 +22,31 @@ public interface PageUtil {
             size = DEFAULT_PAGE_SIZE;
         }
         return PageRequest.of(number - 1, size);
+    }
+
+    static Pageable getPageable(Map<String, String> params) {
+
+        int page = DEFAULT_PAGE_NUMBER;
+        int size = DEFAULT_PAGE_SIZE;
+
+        String sortBy = params.getOrDefault("sortBy", "id");
+        String direction = params.getOrDefault("direction", "asc");
+
+        if (params.containsKey(DEFAULT_NUMBER)) {
+            page = Integer.parseInt(params.get(DEFAULT_NUMBER));
+        }
+
+        if (params.containsKey(DEFAULT_LIMIT)) {
+            size = Integer.parseInt(params.get(DEFAULT_LIMIT));
+        }
+
+        return PageRequest.of(
+                page - 1,
+                size,
+                direction.equalsIgnoreCase("desc")
+                        ? Sort.by(sortBy).descending()
+                        : Sort.by(sortBy).ascending()
+        );
     }
 
 }
