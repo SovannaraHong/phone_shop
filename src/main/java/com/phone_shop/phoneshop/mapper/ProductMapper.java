@@ -3,6 +3,7 @@ package com.phone_shop.phoneshop.mapper;
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
 import com.phone_shop.phoneshop.dto.ProductDTO;
+import com.phone_shop.phoneshop.dto.ProductResponseDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import com.phone_shop.phoneshop.service.ColorService;
@@ -12,15 +13,22 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ModelService.class, ColorService.class})
 public interface ProductMapper {
-    @Mapping(target = "model.id", source = "modelId")
-    @Mapping(target = "color.id", source = "colorId")
+    @Mapping(target = "model", source = "modelId")
+    @Mapping(target = "color", source = "colorId")
     Product toProduct(ProductDTO dto);
 
 //    @Mapping(target = "modelId", source = "model.id")
 //    @Mapping(target = "colorId", source = "color.id")
 //    ProductDTO toProductDto(Product product);
 
+    @Mapping(target = "modelId", source = "model.id")
+    @Mapping(target = "colorId", source = "color.id")
+    ProductDTO toProductDTO(Product product);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", ignore = true)
     ProductHistoryImport toProduct(ImportProductDTO dto);
+
+
+    ProductResponseDTO toResponse(Product product);
 }

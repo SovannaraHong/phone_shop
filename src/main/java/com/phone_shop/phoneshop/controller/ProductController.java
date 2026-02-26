@@ -1,15 +1,16 @@
 package com.phone_shop.phoneshop.controller;
 
 
-import com.phone_shop.phoneshop.dto.ImportProductDTO;
-import com.phone_shop.phoneshop.dto.PriceDTO;
-import com.phone_shop.phoneshop.dto.ProductDTO;
+import com.phone_shop.phoneshop.dto.*;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.mapper.ProductMapper;
+import com.phone_shop.phoneshop.repository.ProductRepository;
 import com.phone_shop.phoneshop.service.ProductService;
+import com.phone_shop.phoneshop.service.S3Service;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,13 @@ import java.util.Map;
 public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
+    private final S3Service s3Service;
+    private final ProductRepository productRepository;
 
-    @GetMapping
-    public ResponseEntity<?> getAllProducts() {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
-    }
+//    @GetMapping
+//    public ResponseEntity<?> getAllProducts() {
+//        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
+//    }
 
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
@@ -81,5 +84,31 @@ public class ProductController {
         return ResponseEntity.ok("Import Product Sucesss");
     }
 
+    @PutMapping("/{id}/image")
+    public ResponseEntity<?> uploadProductImage(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) throws Exception {
+
+        Product product = productService.findById(id);
+
+        // Upload image to S3
+        String url = s3Service.uploadFile(file, "product_images");
+
+        // Only update the image field
+        product.setImagePath(url);
+
+        productRepository.save(product);
+
+        return ResponseEntity.status(HttpStatus.OK).body(product);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getProduct(@RequestParam Map<String, String> params) {
+
+        Page<ProductResponseDTO> products = productService.getProducts(params);
+//        PageDTO pageDTO = new PageDTO(products);
+
+        return ResponseEntity.ok(new PageDTO<>(products));
+    }
 
 }

@@ -2,10 +2,8 @@ package com.phone_shop.phoneshop.controller;
 
 import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.User;
-import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.UserMapper;
-import com.phone_shop.phoneshop.repository.RoleRepository;
-import com.phone_shop.phoneshop.service.RoleService;
+import com.phone_shop.phoneshop.repository.UserRepository;
 import com.phone_shop.phoneshop.service.S3Service;
 import com.phone_shop.phoneshop.service.UserService;
 import com.phone_shop.phoneshop.service.util.ResponseHelper;
@@ -13,11 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,10 +22,11 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    //    private final RoleService roleService;
+//    private final PasswordEncoder passwordEncoder;
+//    private final RoleRepository roleRepository;
     private final S3Service s3Service;
+    private final UserRepository userRepository;
 
 
     //    @PostMapping("/register")
@@ -101,25 +98,22 @@ public class UserController {
         return ResponseEntity.ok(ResponseHelper.deleteSuccess("User", id));
     }
 
-    @PostMapping("/{userId}/image")
-    public ResponseEntity<?> uploadUserImage(
-            @PathVariable Long userId,
-            @RequestPart("image") MultipartFile image) throws IOException {
+    @PutMapping("/{id}/image")
+    public ResponseEntity<?> uploadProductImage(
+            @PathVariable Long id,
+            @RequestPart("image") MultipartFile file) throws Exception {
 
-        User user = userService.findById(userId);
-
-        if (user == null) {
-            throw new ResourceNotFoundException("User", "id", userId);
-        }
+        User user = userService.findById(id);
 
         // Upload image to S3
-        String url = s3Service.uploadFile(image, "user_image");
-        user.setImagePath(url);
+        String url = s3Service.uploadFile(file, "user_images");
 
-        // Save updated user
-        User updatedUser = userService.update(userId, userMapper.toUserDTO(user));
-        UserDTO responseDto = userMapper.toUserDTO(updatedUser);
-        return ResponseEntity.ok(responseDto);
+        // Only update the image field
+        user.setImagePath(url);
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
+
 
 }

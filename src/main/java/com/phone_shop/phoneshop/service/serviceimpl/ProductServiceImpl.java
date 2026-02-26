@@ -2,6 +2,7 @@ package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
 import com.phone_shop.phoneshop.dto.ProductDTO;
+import com.phone_shop.phoneshop.dto.ProductResponseDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import com.phone_shop.phoneshop.exception.ApiException;
@@ -11,12 +12,17 @@ import com.phone_shop.phoneshop.mapper.ProductMapper;
 import com.phone_shop.phoneshop.repository.ProductHistoryImportRepository;
 import com.phone_shop.phoneshop.repository.ProductRepository;
 import com.phone_shop.phoneshop.service.ProductService;
+import com.phone_shop.phoneshop.service.util.PageUtil;
+import com.phone_shop.phoneshop.specification.ProductFilter;
+import com.phone_shop.phoneshop.specification.ProductSpec;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,6 +66,9 @@ public class ProductServiceImpl implements ProductService {
         }
         productId.setModel(product.getModel());
         productId.setColor(product.getColor());
+        if (product.getImagePath() != null) {
+            productId.setImagePath(product.getImagePath());
+        }
         return productRepository.save(productId);
     }
 
@@ -73,6 +82,28 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProducts() {
         return productRepository.findAll();
 
+    }
+
+    @Override
+    public Page<ProductResponseDTO> getProducts(Map<String, String> params) {
+
+        ProductFilter productFilter = new ProductFilter();
+
+        if (params.containsKey("name")) {
+            productFilter.setName(params.get("name"));
+        }
+
+        if (params.containsKey("id")) {
+            productFilter.setId(Long.parseLong(params.get("id")));
+        }
+
+        ProductSpec productSpec = new ProductSpec(productFilter);
+        Pageable pageable = PageUtil.getPageable(params);
+
+        Page<Product> products = productRepository.findAll(productSpec, pageable);
+
+        // 🔥 convert entity page -> dto page
+        return products.map(productMapper::toResponse);
     }
 
     //TODO VALIDATE
