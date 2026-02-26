@@ -85,6 +85,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(long id, UserDTO userDTO) {
         User userId = findById(id);
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new ResourceBadRequestException("User", "username", userDTO.getUsername(), "User already exists");
+        }
         userId.setFirstName(userDTO.getFirstName());
         userId.setLastName(userDTO.getLastName());
         userId.setUsername(userDTO.getUsername());
@@ -92,10 +95,14 @@ public class UserServiceImpl implements UserService {
         userId.setPhoneNumber(userDTO.getPhoneNumber());
         userId.setPlaceOfBirth(userDTO.getPlaceOfBirth());
 
+
         Set<Role> role = userDTO.getRolesId().stream()
                 .map(roleService::findById)
                 .collect(Collectors.toSet());
         userId.setRoles(role);
+        if (userDTO.getImagePath() != null) {
+            userId.setImagePath(userDTO.getImagePath());
+        }
         return userRepository.save(userId);
 
     }

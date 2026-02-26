@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html", "/auth/register", "/brands/**", "/swagger-ui/**",
+                                .requestMatchers("/", "index.html", "/auth/register", "/products/**", "/auth/**", "/swagger-ui/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui.html",
                                         "/webjars/**").permitAll()

@@ -60,6 +60,9 @@ public class ProductServiceImpl implements ProductService {
         }
         productId.setModel(product.getModel());
         productId.setColor(product.getColor());
+        if (product.getImagePath() != null) {
+            productId.setImagePath(product.getImagePath());
+        }
         return productRepository.save(productId);
     }
 
