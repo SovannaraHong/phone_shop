@@ -19,13 +19,4 @@ public interface ModelEntityMapper {
     ModelDTO toModelDTO(Model model);
 
 
-    // Custom method to convert Integer to Brand
-//    default Brand map(Integer brandId) {
-//        if (brandId == null) {
-//            return null;
-//        }
-//        Brand brand = new Brand();
-//        brand.setId(brandId);
-//        return brand;
-//    }
 }
