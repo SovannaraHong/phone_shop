@@ -7,7 +7,7 @@ import com.phone_shop.phoneshop.mapper.ProductMapper;
 import com.phone_shop.phoneshop.repository.ProductRepository;
 import com.phone_shop.phoneshop.service.ProductService;
 import com.phone_shop.phoneshop.service.S3Service;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,7 +46,7 @@ public class ProductController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok(ResponseHelper.deleteSuccess("Product", id));
+        return ResponseEntity.ok(ResponseUtil.deleteSuccess("Product", id));
     }
 
     @PostMapping

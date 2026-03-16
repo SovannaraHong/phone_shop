@@ -3,10 +3,11 @@ package com.phone_shop.phoneshop.controller;
 import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.mapper.UserMapper;
+import com.phone_shop.phoneshop.payload.response.UserResponse;
 import com.phone_shop.phoneshop.repository.UserRepository;
 import com.phone_shop.phoneshop.service.S3Service;
 import com.phone_shop.phoneshop.service.UserService;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,8 +64,14 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> signIn(@Valid @RequestBody UserDTO userDTO) {
         User user = userService.createV1(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
-
+        UserResponse userResponse = UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .userName(user.getUsername())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseUtil.success(HttpStatus.CREATED, "User created Successfully", userResponse));
     }
 
     @GetMapping("{id}")
@@ -95,7 +102,7 @@ public class UserController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         userService.delete(id);
-        return ResponseEntity.ok(ResponseHelper.deleteSuccess("User", id));
+        return ResponseEntity.ok(ResponseUtil.deleteSuccess("User", id));
     }
 
     @PutMapping("/{id}/image")

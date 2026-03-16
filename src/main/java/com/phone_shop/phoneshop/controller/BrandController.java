@@ -10,7 +10,7 @@ import com.phone_shop.phoneshop.mapper.BrandMapper;
 import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.ModelService;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class BrandController {
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
 
-    @PreAuthorize("hasAnyAuthority('brand:write')")
+    //    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
 
@@ -92,7 +92,7 @@ public class BrandController {
         return ResponseEntity.ok(pageDTO);
     }
 
-    @PreAuthorize("hasAnyAuthority('brand:write')")
+    //    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BrandDto brandDto) {
         Brand brand1 = brandMapper.toBrand(brandDto);
@@ -104,7 +104,7 @@ public class BrandController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         brandService.delete(id);
-        return ResponseEntity.ok(ResponseHelper.deleteSuccess("brand", id));
+        return ResponseEntity.ok(ResponseUtil.deleteSuccess("brand", id));
     }
 
 

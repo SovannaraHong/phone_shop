@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         AuthUser authUser = AuthUser.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .authorities(getAuthorities(user.getRoles()))

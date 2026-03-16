@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface BrandRepository extends JpaRepository<Brand, Long>, JpaSpecificationExecutor<Brand> {
 
     Optional<Brand> findByNameContaining(String name);
+
+    boolean existsByName(String name);
 }

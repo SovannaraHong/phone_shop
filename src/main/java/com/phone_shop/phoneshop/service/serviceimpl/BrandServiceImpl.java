@@ -1,12 +1,13 @@
 package com.phone_shop.phoneshop.service.serviceimpl;
 
 import com.phone_shop.phoneshop.entity.Brand;
+import com.phone_shop.phoneshop.exception.ResourceBadRequestException;
 import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.repository.BrandRepository;
 import com.phone_shop.phoneshop.service.BrandService;
-import com.phone_shop.phoneshop.service.util.PageUtil;
 import com.phone_shop.phoneshop.specification.BrandFilter;
 import com.phone_shop.phoneshop.specification.BrandSpec;
+import com.phone_shop.phoneshop.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,9 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Brand create(Brand brand) {
+        if (brandRepository.existsByName(brand.getName())) {
+            throw new ResourceBadRequestException("brand", "name", brand.getName(), "already exist");
+        }
         return brandRepository.save(brand);
     }
 
@@ -79,6 +83,9 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand updateBrand(Long id, Brand brand) {
         Brand byId = findById(id);
+        if (brandRepository.existsByName(byId.getName())) {
+            throw new ResourceBadRequestException("brand", "name", brand.getName(), "already exist");
+        }
         byId.setName(brand.getName());
         byId.setCountry(brand.getCountry());
         return brandRepository.save(byId);
