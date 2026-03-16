@@ -10,7 +10,7 @@ import com.phone_shop.phoneshop.mapper.BrandMapper;
 import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.BrandService;
 import com.phone_shop.phoneshop.service.ModelService;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -104,7 +104,7 @@ public class BrandController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         brandService.delete(id);
-        return ResponseEntity.ok(ResponseHelper.deleteSuccess("brand", id));
+        return ResponseEntity.ok(ResponseUtil.deleteSuccess("brand", id));
     }
 
 

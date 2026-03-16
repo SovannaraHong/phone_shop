@@ -5,7 +5,7 @@ import com.phone_shop.phoneshop.dto.ModelDTO;
 import com.phone_shop.phoneshop.entity.Model;
 import com.phone_shop.phoneshop.mapper.ModelEntityMapper;
 import com.phone_shop.phoneshop.service.ModelService;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,7 +63,7 @@ public class ModelController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         modelService.delete(id);
-        return ResponseHelper.deleteSuccess("model", id);
+        return ResponseUtil.deleteSuccess("model", id);
 
     }
 

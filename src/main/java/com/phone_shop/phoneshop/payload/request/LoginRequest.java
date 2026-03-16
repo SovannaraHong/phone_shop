@@ -1,4 +1,4 @@
-package com.phone_shop.phoneshop.config.security.auth;
+package com.phone_shop.phoneshop.payload.request;
 
 
 import lombok.AllArgsConstructor;

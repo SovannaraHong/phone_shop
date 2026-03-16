@@ -22,12 +22,12 @@ public class UserServiceFakeImpl implements UserService {
 
         List<AuthUser> authUsers = List.of(
 
-                new AuthUser("nara", passwordEncoder.encode("nara123"), RoleEnum.ADMIN.getSimpleGrantedAuthority(),
-                        true, true, true, true),
-                new AuthUser("thida", passwordEncoder.encode("thida123"), RoleEnum.SALE.getSimpleGrantedAuthority(),
-                        true, true, true, true),
-                new AuthUser("cheata", passwordEncoder.encode("cheata123"), RoleEnum.ADMIN.getSimpleGrantedAuthority(),
-                        true, true, true, true)
+//                new AuthUser("nara", passwordEncoder.encode("nara123"), RoleEnum.ADMIN.getSimpleGrantedAuthority(),
+//                        true, true, true, true),
+//                new AuthUser("thida", passwordEncoder.encode("thida123"), RoleEnum.SALE.getSimpleGrantedAuthority(),
+//                        true, true, true, true),
+//                new AuthUser("cheata", passwordEncoder.encode("cheata123"), RoleEnum.ADMIN.getSimpleGrantedAuthority(),
+//                        true, true, true, true)
         );
 
         return authUsers.stream().filter(name -> name.getUsername()

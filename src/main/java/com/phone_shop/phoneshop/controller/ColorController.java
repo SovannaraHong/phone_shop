@@ -4,7 +4,7 @@ import com.phone_shop.phoneshop.dto.ColorDTO;
 import com.phone_shop.phoneshop.entity.Color;
 import com.phone_shop.phoneshop.mapper.ColorMapper;
 import com.phone_shop.phoneshop.service.ColorService;
-import com.phone_shop.phoneshop.service.util.ResponseHelper;
+import com.phone_shop.phoneshop.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +52,7 @@ public class ColorController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         colorService.delete(id);
-        return ResponseEntity.ok(ResponseHelper.deleteSuccess("color", id));
+        return ResponseEntity.ok(ResponseUtil.deleteSuccess("color", id));
     }
 
 }
