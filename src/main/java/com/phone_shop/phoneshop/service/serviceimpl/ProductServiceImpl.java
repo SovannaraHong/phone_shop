@@ -11,6 +11,8 @@ import com.phone_shop.phoneshop.exception.ResourceNotFoundException;
 import com.phone_shop.phoneshop.mapper.ProductMapper;
 import com.phone_shop.phoneshop.repository.ProductHistoryImportRepository;
 import com.phone_shop.phoneshop.repository.ProductRepository;
+import com.phone_shop.phoneshop.service.ColorService;
+import com.phone_shop.phoneshop.service.ModelService;
 import com.phone_shop.phoneshop.service.ProductService;
 import com.phone_shop.phoneshop.specification.ProductFilter;
 import com.phone_shop.phoneshop.specification.ProductSpec;
@@ -39,6 +41,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductHistoryImportRepository productHistoryImportRepository;
     private final ProductMapper productMapper;
+    private final ModelService modelService;
+    private final ColorService colorService;
 
     @Override
     public Product getProductById(Long id) {
@@ -108,7 +112,9 @@ public class ProductServiceImpl implements ProductService {
 
     //TODO VALIDATE
     @Override
-    public Product create(Product product) {
+    public Product create(Product product, Long modelId, Long colorId) {
+        product.setModel(modelService.getModelId(modelId));
+        product.setColor(colorService.findById(colorId));
         if (productRepository.existsByModelAndColor(product.getModel(), product.getColor())) {
             throw new ResourceBadRequestException(
                     "Product",
@@ -120,6 +126,9 @@ public class ProductServiceImpl implements ProductService {
 
         String name = "%s %s".formatted(product.getModel().getName(), product.getColor().getName());
 
+        if (product.getSalePrice() == null) product.setSalePrice(BigDecimal.ZERO);
+        if (product.getUnit() == null) product.setUnit(0);
+        if (product.getImagePath() == null) product.setImagePath("default-image.png");
         product.setName(name);
         return productRepository.save(product);
     }
@@ -143,7 +152,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void importProduct(ImportProductDTO dto) {
         Product product = findById(dto.getProductId());
-        int currentStock = product.getUnit() == null ? 0 : dto.getImportUnit();
+        int currentStock = product.getUnit() == 0 ? 0 : product.getUnit();
         product.setUnit(currentStock + dto.getImportUnit());
         productRepository.save(product);
         ProductHistoryImport productHistory = productMapper.toProduct(dto);

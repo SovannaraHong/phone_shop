@@ -13,8 +13,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ModelService.class, ColorService.class})
 public interface ProductMapper {
-    @Mapping(target = "model", source = "modelId")
-    @Mapping(target = "color", source = "colorId")
+    //    @Mapping(target = "model", source = "modelId")
+//    @Mapping(target = "color", source = "colorId")
+    @Mapping(target = "model", ignore = true)
+    @Mapping(target = "color", ignore = true)
     Product toProduct(ProductDTO dto);
 
 
@@ -22,6 +24,8 @@ public interface ProductMapper {
     @Mapping(target = "product", ignore = true)
     ProductHistoryImport toProduct(ImportProductDTO dto);
 
-
+    @Mapping(target = "modelName", source = "model.name")
+    @Mapping(target = "colorName", source = "color.name")
+    @Mapping(target = "brandId", source = "model.brand.id")
     ProductResponseDTO toResponse(Product product);
 }

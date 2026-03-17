@@ -12,4 +12,8 @@ public class ProductResponseDTO {
     private String imagePath;
     private Integer unit;
     private BigDecimal salePrice;
+    private String modelName;
+    private String colorName;
+    private String description;
+    private Long brandId;
 }

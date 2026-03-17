@@ -52,8 +52,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ProductDTO dto) {
         Product product = productMapper.toProduct(dto);
-        Product products = productService.create(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(products);
+        Product products = productService.create(product, dto.getModelId(), dto.getColorId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toResponse(products));
     }
 
     @PostMapping("{productId}/setPrice")

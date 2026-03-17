@@ -11,4 +11,5 @@ public class ProductDTO {
     private Long modelId;
     @NotNull(message = "color id is required")
     private Long colorId;
+    private String description;
 }
