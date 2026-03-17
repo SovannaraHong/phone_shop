@@ -39,11 +39,14 @@ public class SecurityConfig {
 
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager);
         jwtLoginFilter.setFilterProcessesUrl("/login");
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html", "/auth/register", "/products/**", "/role/**", "/swagger-ui/**",
+                                .requestMatchers("/", "index.html", "/auth/register", "/products/**", "/brands/**", "/swagger-ui/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui.html",
                                         "/webjars/**").permitAll()
@@ -59,7 +62,9 @@ public class SecurityConfig {
                                 .authenticated()
                 )
                 .addFilter(jwtLoginFilter)
-                .addFilterAfter(new TokenVerify(), JwtLoginFilter.class);
+                .addFilterAfter(new TokenVerify(), JwtLoginFilter.class)
+                .cors(cors -> {
+                });
 
 
 //                .httpBasic(Customizer.withDefaults());
