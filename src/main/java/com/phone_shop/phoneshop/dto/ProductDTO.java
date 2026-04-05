@@ -12,4 +12,7 @@ public class ProductDTO {
     @NotNull(message = "color id is required")
     private Long colorId;
     private String description;
+    private String active;
+    private String typeSell;
+
 }

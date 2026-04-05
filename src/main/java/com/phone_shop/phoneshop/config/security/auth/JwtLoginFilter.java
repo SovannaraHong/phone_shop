@@ -11,15 +11,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 //filter step 1
@@ -27,6 +34,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    // Store the login request to check later
+    private final ThreadLocal<LoginRequest> loginRequestHolder = new ThreadLocal<>();
 
     //Reads username/password from request body
     @Override
@@ -35,7 +44,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         ObjectMapper mapper = new ObjectMapper();
         try {
             LoginRequest loginRequest = mapper.readValue(request.getInputStream(), LoginRequest.class);
-
+            // ← Store for use in unsuccessfulAuthentication
+            loginRequestHolder.set(loginRequest);
             Authentication authRequest =
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -57,7 +67,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         String secreteKey = "hghsdghowrhoew234sdjhgfskhjgdjfsdkfjlsdhfiwoeytiweuyt4564356455744grgdfk4654lhskdfh35";
         AuthUser user = (AuthUser) authResult.getPrincipal();
         long UserId = user.getId();
-
+        loginRequestHolder.remove();
 //        String token = Jwts.builder()
 //                .setSubject(authResult.getName())
 //                .claim("authorities", authResult.getAuthorities())
@@ -84,7 +94,13 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .setIssuer("phone_shop")
                 .signWith(JwtUtil.KEY, io.jsonwebtoken.SignatureAlgorithm.HS512)
                 .compact();
+        List<String> roles = authResult.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
         LoginData data = LoginData.builder()
+                .username(user.getUsername())
+                .roles(roles)
                 .userId(UserId)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -92,6 +108,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         LoginResponse loginResponse = LoginResponse.builder()
                 .status(200)
                 .message("Login success")
+
                 .data(data)
                 .timestamp(LocalDateTime.now().toString())
                 .build();
@@ -105,18 +122,57 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     }
 
+    //TODO OLD
+//    @Override
+//    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+//                                              AuthenticationException failed) throws IOException, ServletException {
+//        loginRequestHolder.remove();
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//        response.setContentType("application/json");
+//        LoginResponse errorResponse = LoginResponse.builder()
+//                .status(HttpServletResponse.SC_UNAUTHORIZED)
+//                .message("Unauthorized || invalid username or password")
+//                .data(null)
+//                .timestamp(LocalDateTime.now().toString())
+//                .build();
+//
+//        new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+//    }
+    //TODO NEW
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
+        LoginRequest loginRequest = loginRequestHolder.get();
+        loginRequestHolder.remove(); // ← clean up
+
+        // ← Determine which field is wrong
+        String field = "username";
+        String message;
+
+        if (failed instanceof UsernameNotFoundException) {
+            // Username does not exist in DB
+            field = "username";
+            message = "Username not found";
+        } else if (failed instanceof BadCredentialsException) {
+            // Username exists but password is wrong
+            field = "password";
+            message = "Invalid password";
+        } else {
+            field = "username";
+            message = "Invalid username or password";
+        }
+
+        // Build error response with field info
+        Map<String, Object> errorBody = new HashMap<>();
+        errorBody.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+        errorBody.put("message", message);
+        errorBody.put("field", field); // ← tells frontend which field is wrong
+        errorBody.put("data", null);
+        errorBody.put("timestamp", LocalDateTime.now().toString());
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        LoginResponse errorResponse = LoginResponse.builder()
-                .status(HttpServletResponse.SC_UNAUTHORIZED)
-                .message("Unauthorized || invalid username or password")
-                .data(null)
-                .timestamp(LocalDateTime.now().toString())
-                .build();
-
-        new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+        new ObjectMapper().writeValue(response.getOutputStream(), errorBody);
     }
 }

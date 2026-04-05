@@ -23,7 +23,7 @@ public class UserDTO {
     @Size(min = 2, max = 50, message = "username must be between 2 and 50 characters")
     private String username;
 
-    @NotBlank(message = "password is required")
+    //    @NotBlank(message = "password is required")
     @Size(min = 6, message = "password must be at least 6 characters")
     private String password;
 
@@ -35,4 +35,6 @@ public class UserDTO {
 
     private String placeOfBirth;
     private String imagePath;
+    private String status;
+
 }

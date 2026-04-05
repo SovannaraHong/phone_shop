@@ -36,7 +36,11 @@ public class Product {
 
     @Column(name = "Stock_product")
     private Integer unit;
+    @Column(name = "Product_Type")
+    private String typeSell;
     @Column(name = "description")
     private String description;
+    @Column(name = "status")
+    private Boolean active;
 
 }

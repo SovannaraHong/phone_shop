@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/models")
@@ -20,7 +21,7 @@ public class ModelController {
     private final ModelService modelService;
     private final ModelEntityMapper modelMapper;
 
-    //    @PreAuthorize("hasAnyAuthority('model:write')")
+    @PreAuthorize("hasAnyAuthority('model:write')")
     //TODO IMPROVE FUNCTION
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ModelDTO modelDTO) {
@@ -29,7 +30,7 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
     }
 
-    //    @PreAuthorize("hasAnyAuthority('model:read')")
+    @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> getModelById(@PathVariable Long id) {
         Model modelId = modelService.getModelId(id);
@@ -37,19 +38,19 @@ public class ModelController {
                 .body(modelMapper.toModelDTO(modelId));
     }
 
-    //    @PreAuthorize("hasAnyAuthority('model:read')")
+    @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getModelByName(@PathVariable String name) {
         return ResponseEntity.ok().body(modelService.getModelByName(name));
     }
 
-    //    @PreAuthorize("hasAnyAuthority('model:read')")
+    @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping()
     public ResponseEntity<?> getModels() {
         return ResponseEntity.ok().body(modelService.getModels());
     }
 
-    //    @PreAuthorize("hasAnyAuthority('model:write')")
+    @PreAuthorize("hasAnyAuthority('model:write')")
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ModelDTO modelDTO) {
         Model model = modelMapper.toModel(modelDTO);
@@ -57,7 +58,7 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(modelUpdate);
     }
 
-//    @PreAuthorize("hasAnyAuthority('model:write')")
+    @PreAuthorize("hasAnyAuthority('model:write')")
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
