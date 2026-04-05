@@ -27,6 +27,8 @@ public class User {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    private String status;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;

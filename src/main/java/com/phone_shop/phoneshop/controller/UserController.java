@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +62,8 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
 //
 //    }
+    @PreAuthorize("hasAnyAuthority('user:write')")
+
     @PostMapping("/register")
     public ResponseEntity<?> signIn(@Valid @RequestBody UserDTO userDTO) {
         User user = userService.createV1(userDTO);
@@ -74,17 +77,23 @@ public class UserController {
                 .body(ResponseUtil.success(HttpStatus.CREATED, "User created Successfully", userResponse));
     }
 
+    @PreAuthorize("hasAnyAuthority('user:read')")
+
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         User user = userService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:read')")
+
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         List<User> users = userService.getUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
+
+    @PreAuthorize("hasAnyAuthority('user:write')")
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
@@ -93,17 +102,23 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userMapper.toUserDTO(user));
     }
 
+    @PreAuthorize("hasAnyAuthority('user:read')")
+
     @GetMapping("/name/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable String username) {
         User user = userService.findByName(username);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @PreAuthorize("hasAnyAuthority('user:write')")
+
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.ok(ResponseUtil.deleteSuccess("User", id));
     }
+
+    @PreAuthorize("hasAnyAuthority('user:write')")
 
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(

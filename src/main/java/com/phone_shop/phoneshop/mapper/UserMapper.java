@@ -21,6 +21,7 @@ public interface UserMapper {
     User toUser(UserDTO userDTO);
 
     @Mapping(target = "rolesId", source = "roles")
+    @Mapping(target = "status", source = "status")
     UserDTO toUserDTO(User user);
 
     default Set<Long> mapRolesToIds(Set<Role> roles) {

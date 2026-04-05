@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,20 +29,24 @@ public class ProductController {
     private final S3Service s3Service;
     private final ProductRepository productRepository;
 
-//    @GetMapping
+    //    @GetMapping
 //    public ResponseEntity<?> getAllProducts() {
 //        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
 //    }
-
+    @PreAuthorize("hasAnyAuthority('product:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(id));
     }
 
+    @PreAuthorize("hasAnyAuthority('product:read')")
+
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductByName(name));
     }
+
+    @PreAuthorize("hasAnyAuthority('product:write')")
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -49,12 +54,16 @@ public class ProductController {
         return ResponseEntity.ok(ResponseUtil.deleteSuccess("Product", id));
     }
 
+    @PreAuthorize("hasAnyAuthority('product:write')")
+
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ProductDTO dto) {
         Product product = productMapper.toProduct(dto);
-        Product products = productService.create(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(products);
+        Product products = productService.create(product, dto.getModelId(), dto.getColorId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toResponse(products));
     }
+
+    @PreAuthorize("hasAnyAuthority('product:write')")
 
     @PostMapping("{productId}/setPrice")
     public ResponseEntity<?> importPrice(@PathVariable("productId") Long id, @Valid @RequestBody PriceDTO priceDTO) {
@@ -64,12 +73,16 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('product:write')")
+
     @PutMapping("{id}")
     public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
         Product product = productService.updateProduct(dto, id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
 
     }
+
+    @PreAuthorize("hasAnyAuthority('product:write')")
 
     @PostMapping("uploadProduct")
     public ResponseEntity<?> uploadProduct(@Valid @RequestParam("file") MultipartFile file) {
@@ -78,11 +91,15 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('product:write')")
+
     @PostMapping("importProduct")
     public ResponseEntity<?> importProduct(@Valid @RequestBody ImportProductDTO dto) {
         productService.importProduct(dto);
         return ResponseEntity.ok("Import Product Sucesss");
     }
+
+    @PreAuthorize("hasAnyAuthority('product:write')")
 
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(
@@ -101,6 +118,8 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
+
+    @PreAuthorize("hasAnyAuthority('product:read')")
 
     @GetMapping
     public ResponseEntity<?> getProduct(@RequestParam Map<String, String> params) {

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class RoleController {
     private final RoleService roleService;
     private final RoleMapper roleMapper;
 
+    @PreAuthorize("hasAnyAuthority('role:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         Role roleId = roleService.findById(id);
@@ -27,11 +29,15 @@ public class RoleController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('role:read')")
+
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         Role role = roleService.findByName(name);
         return ResponseEntity.status(HttpStatus.OK).body(role);
     }
+
+    @PreAuthorize("hasAnyAuthority('role:read')")
 
     @GetMapping
     public ResponseEntity<?> findAll() {
@@ -39,6 +45,8 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.OK).body(roles);
 
     }
+
+    @PreAuthorize("hasAnyAuthority('role:write')")
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody RoleDTO roleDTO) {
@@ -50,6 +58,8 @@ public class RoleController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('role:write')")
+
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
         Role update = roleService.update(id, roleDTO);
@@ -57,6 +67,7 @@ public class RoleController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('role:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         roleService.delete(id);

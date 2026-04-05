@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<AuthUser> findByUsername(String username) {
+//        User user = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
 
         AuthUser authUser = AuthUser.builder()
                 .id(user.getId())
@@ -92,9 +95,13 @@ public class UserServiceImpl implements UserService {
         userId.setFirstName(userDTO.getFirstName());
         userId.setLastName(userDTO.getLastName());
         userId.setUsername(userDTO.getUsername());
-        userId.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+//        userId.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userId.setPhoneNumber(userDTO.getPhoneNumber());
         userId.setPlaceOfBirth(userDTO.getPlaceOfBirth());
+        userId.setStatus(userDTO.getStatus());
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+            userId.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
 
 
         Set<Role> role = userDTO.getRolesId().stream()

@@ -24,7 +24,7 @@ public interface ProductService {
 
     Page<ProductResponseDTO> getProducts(Map<String, String> params);
 
-    Product create(Product product);
+    Product create(Product product, Long modelId, Long colorId);
 
     Product findById(Long id);
 

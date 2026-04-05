@@ -35,7 +35,7 @@ public class BrandController {
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
 
-    //    @PreAuthorize("hasAnyAuthority('brand:write')")
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
 
@@ -79,7 +79,7 @@ public class BrandController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
-    //    @PreAuthorize("hasAnyAuthority('brand:read')")
+    @PreAuthorize("hasAnyAuthority('brand:read')")
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
         Page<Brand> brands = brandService.getBrands(params);
@@ -92,7 +92,7 @@ public class BrandController {
         return ResponseEntity.ok(pageDTO);
     }
 
-    //    @PreAuthorize("hasAnyAuthority('brand:write')")
+    @PreAuthorize("hasAnyAuthority('brand:write')")
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BrandDto brandDto) {
         Brand brand1 = brandMapper.toBrand(brandDto);

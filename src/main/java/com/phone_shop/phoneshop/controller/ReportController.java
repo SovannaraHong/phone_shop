@@ -23,7 +23,7 @@ import java.util.List;
 public class ReportController {
     private final ReportService reportService;
 
-    @PreAuthorize("hasAnyAuthority('report')")
+    @PreAuthorize("hasAnyAuthority('report:read')")
 
     @GetMapping("{startDate}/{endDate}")
     public ResponseEntity<?> productReport(
@@ -34,7 +34,7 @@ public class ReportController {
         return ResponseEntity.ok(list);
     }
 
-    @PreAuthorize("hasAnyAuthority('report')")
+    @PreAuthorize("hasAnyAuthority('report:read')")
     @GetMapping("expense/{startDate}/{endDate}")
     public ResponseEntity<?> expenseReport(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate startDate,
