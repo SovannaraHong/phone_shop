@@ -4,10 +4,12 @@ import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -43,6 +45,11 @@ public class UserServiceFakeImpl implements UserService {
     @Override
     public List<User> getUsers() {
         return List.of();
+    }
+
+    @Override
+    public Page<User> getUsers(Map<String, String> params) {
+        return null;
     }
 
     @Override

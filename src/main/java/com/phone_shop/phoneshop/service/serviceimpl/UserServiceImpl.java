@@ -11,18 +11,20 @@ import com.phone_shop.phoneshop.repository.RoleRepository;
 import com.phone_shop.phoneshop.repository.UserRepository;
 import com.phone_shop.phoneshop.service.RoleService;
 import com.phone_shop.phoneshop.service.UserService;
+import com.phone_shop.phoneshop.specification.UserFilter;
+import com.phone_shop.phoneshop.specification.UserSpec;
+import com.phone_shop.phoneshop.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,6 +121,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsers() {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    @Override
+    public Page<User> getUsers(Map<String, String> params) {
+        UserFilter userFilter = new UserFilter();
+        if (params.containsKey("id")) {
+            String id = params.get("id");
+            userFilter.setId(Integer.parseInt(id));
+        }
+        if (params.containsKey("username")) {
+            userFilter.setUsername(params.get("username"));
+        }
+        UserSpec userSpec = new UserSpec(userFilter);
+        Pageable pageable = PageUtil.getPageable(params);
+        return userRepository.findAll(userSpec, pageable);
     }
 
     @Override
