@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phone_shop.phoneshop.config.security.AuthUser;
 import com.phone_shop.phoneshop.payload.request.LoginRequest;
 import com.phone_shop.phoneshop.payload.response.LoginResponse;
+import com.phone_shop.phoneshop.service.UserService;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     // Store the login request to check later
     private final ThreadLocal<LoginRequest> loginRequestHolder = new ThreadLocal<>();
 
@@ -67,6 +69,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         String secreteKey = "hghsdghowrhoew234sdjhgfskhjgdjfsdkfjlsdhfiwoeytiweuyt4564356455744grgdfk4654lhskdfh35";
         AuthUser user = (AuthUser) authResult.getPrincipal();
         long UserId = user.getId();
+        userService.updateStatus(user.getId(), "Active");
         loginRequestHolder.remove();
 //        String token = Jwts.builder()
 //                .setSubject(authResult.getName())
@@ -84,6 +87,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(7)))
+//                .setExpiration(new java.util.Date(System.currentTimeMillis() + 5000))
+
                 .setIssuer("phone_shop")
                 .signWith(JwtUtil.KEY, io.jsonwebtoken.SignatureAlgorithm.HS512)
                 .compact();
@@ -91,6 +96,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(30)))
+//                .setExpiration(new java.util.Date(System.currentTimeMillis() + 5000))
                 .setIssuer("phone_shop")
                 .signWith(JwtUtil.KEY, io.jsonwebtoken.SignatureAlgorithm.HS512)
                 .compact();

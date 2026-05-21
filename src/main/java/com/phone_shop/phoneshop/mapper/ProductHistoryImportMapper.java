@@ -2,6 +2,7 @@ package com.phone_shop.phoneshop.mapper;
 
 
 import com.phone_shop.phoneshop.dto.ImportProductDTO;
+import com.phone_shop.phoneshop.dto.ProductHistoryImportResponseDTO;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,4 +12,7 @@ public interface ProductHistoryImportMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", ignore = true)
     ProductHistoryImport toProduct(ImportProductDTO dto);
+
+    @Mapping(target = "product", source = "product")
+    ProductHistoryImportResponseDTO toResponse(ProductHistoryImport entity);
 }

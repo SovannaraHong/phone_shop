@@ -2,6 +2,7 @@ package com.phone_shop.phoneshop.config.security;
 
 import com.phone_shop.phoneshop.config.security.auth.JwtLoginFilter;
 import com.phone_shop.phoneshop.config.security.auth.TokenVerify;
+import com.phone_shop.phoneshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,9 +36,9 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager, AuthenticationProvider provider) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager manager, AuthenticationProvider provider, UserService userService) throws Exception {
 
-        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager);
+        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(manager, userService);
         jwtLoginFilter.setFilterProcessesUrl("/login");
         http
 
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 .authenticationProvider(provider)
                 .authorizeHttpRequests(auth -> auth
 
-                                .requestMatchers("/", "index.html", "/auth/register", "/swagger-ui/**",
+                                .requestMatchers("/", "index.html", "/auth/register", "/swagger-ui/**", "/auth/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui.html",
                                         "/webjars/**").permitAll()

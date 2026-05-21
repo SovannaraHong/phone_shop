@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductHistoryImportRepository extends JpaRepository<ProductHistoryImport, Long>, JpaSpecificationExecutor<ProductHistoryImport> {
-
+    boolean existsByProductId(Long productId);
 }

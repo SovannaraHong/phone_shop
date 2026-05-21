@@ -1,5 +1,6 @@
 package com.phone_shop.phoneshop.controller;
 
+import com.phone_shop.phoneshop.dto.PageDTO;
 import com.phone_shop.phoneshop.dto.UserDTO;
 import com.phone_shop.phoneshop.entity.User;
 import com.phone_shop.phoneshop.mapper.UserMapper;
@@ -10,13 +11,14 @@ import com.phone_shop.phoneshop.service.UserService;
 import com.phone_shop.phoneshop.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -85,13 +87,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @PreAuthorize("hasAnyAuthority('user:read')")
-
-    @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        List<User> users = userService.getUsers();
-        return ResponseEntity.status(HttpStatus.OK).body(users);
-    }
+//    @PreAuthorize("hasAnyAuthority('user:read')")
+//
+//    @GetMapping
+//    public ResponseEntity<?> getAllUsers() {
+//        List<User> users = userService.getUsers();
+//        return ResponseEntity.status(HttpStatus.OK).body(users);
+//    }
 
     @PreAuthorize("hasAnyAuthority('user:write')")
 
@@ -119,6 +121,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyAuthority('user:write')")
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        userService.updateStatus(id, body.get("status"));
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:write')")
 
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(
@@ -135,6 +144,14 @@ public class UserController {
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:read')")
+    @GetMapping
+    public ResponseEntity<?> findAllUser(@RequestParam Map<String, String> params) {
+        Page<User> users = userService.getUsers(params);
+        PageDTO pageDTO = new PageDTO(users);
+        return ResponseEntity.ok(pageDTO);
     }
 
 
