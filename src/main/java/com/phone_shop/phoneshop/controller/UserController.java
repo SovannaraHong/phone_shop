@@ -121,6 +121,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyAuthority('user:write')")
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        userService.updateStatus(id, body.get("status"));
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('user:write')")
 
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(

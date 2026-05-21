@@ -20,6 +20,8 @@ public interface UserService {
 
     User findByName(String username);
 
+    void updateStatus(Long id, String status);
+
     //TODO IMPROVE VALIDATION
     User create(User user);
 

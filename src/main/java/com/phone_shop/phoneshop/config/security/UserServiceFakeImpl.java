@@ -58,6 +58,11 @@ public class UserServiceFakeImpl implements UserService {
     }
 
     @Override
+    public void updateStatus(Long id, String status) {
+
+    }
+
+    @Override
     public User create(User user) {
         return null;
     }

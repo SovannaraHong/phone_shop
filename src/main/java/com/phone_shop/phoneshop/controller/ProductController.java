@@ -47,7 +47,6 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
@@ -74,21 +73,47 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @PutMapping("{id}")
     public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
         Product product = productService.updateProduct(dto, id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
-
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productMapper.toResponse(product));
     }
+//    @PutMapping("{id}")
+//    public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
+//        Product product = productService.updateProduct(dto, id);
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
+//
+//    }
 
+    //    @PreAuthorize("hasAnyAuthority('product:write')")
+//
+//    @PostMapping("uploadProduct")
+//    public ResponseEntity<?> uploadProduct(@Valid @RequestParam("file") MultipartFile file) {
+//        Map<Integer, String> errorResponse = productService.uploadProduct(file);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(errorResponse);
+//
+//    }
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @PostMapping("uploadProduct")
-    public ResponseEntity<?> uploadProduct(@Valid @RequestParam("file") MultipartFile file) {
-        Map<Integer, String> errorResponse = productService.uploadProduct(file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(errorResponse);
+    public ResponseEntity<?> uploadProduct(@RequestParam("file") MultipartFile file) {
+        Map<Integer, String> errors = productService.uploadProduct(file);
 
+        if (errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    Map.of(
+                            "success", true,
+                            "message", "All products uploaded successfully"
+                    )
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(
+                    Map.of(
+                            "success", false,
+                            "message", "Upload completed with " + errors.size() + " error(s)",
+                            "errors", errors
+                    )
+            );
+        }
     }
 
     @PreAuthorize("hasAnyAuthority('product:write')")

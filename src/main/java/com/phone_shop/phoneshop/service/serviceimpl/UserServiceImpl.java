@@ -91,8 +91,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(long id, UserDTO userDTO) {
         User userId = findById(id);
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new ResourceBadRequestException("User", "username", userDTO.getUsername(), "User already exists");
+//        if (userRepository.existsByUsername(userDTO.getUsername())) {
+//            throw new ResourceBadRequestException("User", "username", userDTO.getUsername(), "User already exists");
+//        }
+        if (!userId.getUsername().equals(userDTO.getUsername())) {
+            boolean usernameExists = userRepository.existsByUsername(userDTO.getUsername());
+            if (usernameExists) {
+                throw new RuntimeException("Username already exists: " + userDTO.getUsername());
+            }
         }
         userId.setFirstName(userDTO.getFirstName());
         userId.setLastName(userDTO.getLastName());
@@ -117,6 +123,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    public void updateStatus(Long id, String status) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setStatus(status);
+        userRepository.save(user);
+    }
 
     @Override
     public List<User> getUsers() {
