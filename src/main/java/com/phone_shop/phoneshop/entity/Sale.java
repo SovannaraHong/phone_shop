@@ -19,4 +19,11 @@ public class Sale {
     @Column(name = "sold_date")
     private LocalDateTime soldDate;
 
+    @PrePersist
+    public void prePersist() {
+        if (soldDate == null) {
+            soldDate = LocalDateTime.now();  // ← auto set soldDate on every new Sale
+        }
+    }
+
 }

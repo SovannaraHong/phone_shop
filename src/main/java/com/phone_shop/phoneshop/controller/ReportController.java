@@ -24,11 +24,12 @@ public class ReportController {
     private final ReportService reportService;
 
     @PreAuthorize("hasAnyAuthority('report:read')")
-
     @GetMapping("{startDate}/{endDate}")
     public ResponseEntity<?> productReport(
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @PathVariable LocalDateTime startDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @PathVariable LocalDateTime endDate) {
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            @PathVariable LocalDateTime startDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            @PathVariable LocalDateTime endDate) {
 
         List<ProductReportDTO> list = reportService.productReportSold(startDate, endDate);
         return ResponseEntity.ok(list);

@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -75,32 +74,69 @@ public class ReportServiceImpl implements ReportService {
         return lists;
     }
 
+    //    @Override
+//    public List<ExpenseReportDTO> expenseReport(LocalDate startDate, LocalDate endDate) {
+//        var expenseList = new ArrayList<ExpenseReportDTO>();
+//        ProductImportHistoryFilter productImportHistoryFilter = new ProductImportHistoryFilter();
+//        productImportHistoryFilter.setStartDate(startDate);
+//        productImportHistoryFilter.setEndDate(endDate);
+//        ProductImportHistorySpec spec = new ProductImportHistorySpec(productImportHistoryFilter);
+//
+//        //customize expense report
+//        List<ProductHistoryImport> productImport = productHistoryImportRepository.findAll(spec);
+//        Set<Long> productIds = productImport.stream().map(ps -> ps.getId()).collect(Collectors.toSet());
+//        List<Product> products = productRepository.findAllById(productIds);
+//        Map<Long, Product> productMap = products
+//                .stream()
+//                .collect(Collectors
+//                        .toMap(Product::getId, Function.identity()));
+//
+//        Map<Product, List<ProductHistoryImport>> importMap = productImport
+//                .stream()
+//                .collect(Collectors.groupingBy(ProductHistoryImport::getProduct));
+//
+//        for (var entry : importMap.entrySet()) {
+//            Product product = productMap.get(entry.getKey().getId());
+//            List<ProductHistoryImport> pdList = entry.getValue();
+//            double amount = pdList
+//                    .stream()
+//                    .mapToDouble(pd -> pd.getImportUnit() * pd.getPricePerUnit().doubleValue())
+//                    .sum();
+//
+//            Integer unitExpense = pdList.stream()
+//                    .map(ProductHistoryImport::getImportUnit)
+//                    .reduce(0, Integer::sum);
+//
+//            ExpenseReportDTO expenseReportDTO = new ExpenseReportDTO();
+//            expenseReportDTO.setProductId(product.getId());
+//            expenseReportDTO.setProductName(product.getName());
+//            expenseReportDTO.setExpenseUnit(unitExpense);
+//            expenseReportDTO.setTotalAmount(BigDecimal.valueOf(amount));
+//            expenseList.add(expenseReportDTO);
+//        }
+//        expenseList.sort((a, b) -> (int) (a.getProductId() - b.getProductId()));
+//        return expenseList;
+//    }
     @Override
     public List<ExpenseReportDTO> expenseReport(LocalDate startDate, LocalDate endDate) {
         var expenseList = new ArrayList<ExpenseReportDTO>();
+
         ProductImportHistoryFilter productImportHistoryFilter = new ProductImportHistoryFilter();
         productImportHistoryFilter.setStartDate(startDate);
         productImportHistoryFilter.setEndDate(endDate);
         ProductImportHistorySpec spec = new ProductImportHistorySpec(productImportHistoryFilter);
 
-        //customize expense report
         List<ProductHistoryImport> productImport = productHistoryImportRepository.findAll(spec);
-        Set<Long> productIds = productImport.stream().map(ps -> ps.getId()).collect(Collectors.toSet());
-        List<Product> products = productRepository.findAllById(productIds);
-        Map<Long, Product> productMap = products
-                .stream()
-                .collect(Collectors
-                        .toMap(Product::getId, Function.identity()));
 
         Map<Product, List<ProductHistoryImport>> importMap = productImport
                 .stream()
                 .collect(Collectors.groupingBy(ProductHistoryImport::getProduct));
 
         for (var entry : importMap.entrySet()) {
-            Product product = productMap.get(entry.getKey().getId());
+            Product product = entry.getKey();
             List<ProductHistoryImport> pdList = entry.getValue();
-            double amount = pdList
-                    .stream()
+
+            double amount = pdList.stream()
                     .mapToDouble(pd -> pd.getImportUnit() * pd.getPricePerUnit().doubleValue())
                     .sum();
 
@@ -115,6 +151,7 @@ public class ReportServiceImpl implements ReportService {
             expenseReportDTO.setTotalAmount(BigDecimal.valueOf(amount));
             expenseList.add(expenseReportDTO);
         }
+
         expenseList.sort((a, b) -> (int) (a.getProductId() - b.getProductId()));
         return expenseList;
     }

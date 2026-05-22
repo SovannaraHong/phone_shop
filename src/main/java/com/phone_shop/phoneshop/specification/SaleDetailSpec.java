@@ -20,12 +20,23 @@ public class SaleDetailSpec implements Specification<SaleDetail> {
     @Override
     public Predicate toPredicate(Root<SaleDetail> saleDetail, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
-        Join<SaleDetail, Sale> sale = saleDetail.join("sale");
+        Join<SaleDetail, Sale> sale = saleDetail.join("sale", JoinType.INNER);
+
         if (Objects.nonNull(saleDetailFilter.getStartDate())) {
-            cb.greaterThanOrEqualTo(sale.get("soldDate"), saleDetailFilter.getStartDate());
+            predicates.add(
+                    cb.greaterThanOrEqualTo(
+                            sale.get("soldDate"),
+                            saleDetailFilter.getStartDate()
+                    )
+            );
         }
         if (Objects.nonNull(saleDetailFilter.getEndDate())) {
-            cb.greaterThanOrEqualTo(sale.get("soldDate"), saleDetailFilter.getEndDate());
+            predicates.add(
+                    cb.lessThanOrEqualTo(
+                            sale.get("soldDate"),
+                            saleDetailFilter.getEndDate()
+                    )
+            );
         }
 
         return cb.and(predicates.toArray(Predicate[]::new));
