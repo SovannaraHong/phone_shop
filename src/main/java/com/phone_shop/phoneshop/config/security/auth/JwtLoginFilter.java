@@ -108,6 +108,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .username(user.getUsername())
                 .roles(roles)
                 .userId(UserId)
+                .imagePath(user.getImagePath())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

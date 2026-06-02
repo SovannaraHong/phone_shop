@@ -21,6 +21,7 @@ public class AuthUser implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
+    private String imagePath;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -12,4 +12,6 @@ public interface ReportService {
     List<ProductReportDTO> productReportSold(LocalDateTime startDate, LocalDateTime endDate);
 
     List<ExpenseReportDTO> expenseReport(LocalDate startDate, LocalDate endDate);
+
+    List<ProductReportDTO> getAllProductSold();
 }

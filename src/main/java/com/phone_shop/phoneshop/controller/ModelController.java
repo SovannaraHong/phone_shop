@@ -21,50 +21,77 @@ public class ModelController {
     private final ModelService modelService;
     private final ModelEntityMapper modelMapper;
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('model:write')")
-    //TODO IMPROVE FUNCTION
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ModelDTO modelDTO) {
+
         Model model = modelMapper.toModel(modelDTO);
+
         model = modelService.create(model);
-        return ResponseEntity.status(HttpStatus.CREATED).body(model);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(model);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> getModelById(@PathVariable Long id) {
+
         Model modelId = modelService.getModelId(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
                 .body(modelMapper.toModelDTO(modelId));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getModelByName(@PathVariable String name) {
-        return ResponseEntity.ok().body(modelService.getModelByName(name));
+
+        return ResponseEntity
+                .ok()
+                .body(modelService.getModelByName(name));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('model:read')")
     @GetMapping()
     public ResponseEntity<?> getModels() {
-        return ResponseEntity.ok().body(modelService.getModels());
+
+        return ResponseEntity
+                .ok()
+                .body(modelService.getModels());
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('model:write')")
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ModelDTO modelDTO) {
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @Valid @RequestBody ModelDTO modelDTO
+    ) {
+
         Model model = modelMapper.toModel(modelDTO);
+
         Model modelUpdate = modelService.update(id, model);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(modelUpdate);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(modelUpdate);
     }
 
+    //    @PreAuthorize("hasRole('Admin')")
     @PreAuthorize("hasAnyAuthority('model:write')")
-
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        modelService.delete(id);
-        return ResponseUtil.deleteSuccess("model", id);
 
+        modelService.delete(id);
+
+        return ResponseUtil.deleteSuccess("model", id);
     }
 
 

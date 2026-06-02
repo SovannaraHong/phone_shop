@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
                 .accountNonExpired(user.isAccountNonExpired())
                 .accountNonLocked(user.isAccountNonLocked())
                 .credentialsNonExpired(user.isCredentialsNonExpired())
+                .imagePath(user.getImagePath())
                 .enabled(user.isEnabled())
 
                 .build();

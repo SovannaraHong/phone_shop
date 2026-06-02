@@ -20,51 +20,79 @@ public class ColorController {
     private final ColorService colorService;
     private final ColorMapper colorMapper;
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('color:write')")
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ColorDTO dto) {
+
         Color color = colorService.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(color);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(color);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('color:read')")
-
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
+
         Color color = colorService.findById(id);
+
         ColorDTO colorDTO = colorMapper.toColorDTO(color);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(colorDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(colorDTO);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('color:read')")
-
     @GetMapping
     public ResponseEntity<?> getAllColors() {
-        return ResponseEntity.ok().body(colorService.getColors());
+
+        return ResponseEntity
+                .ok()
+                .body(colorService.getColors());
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('color:read')")
-
     @GetMapping("name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
-        return ResponseEntity.ok().body(colorService.findByName(name));
+
+        return ResponseEntity
+                .ok()
+                .body(colorService.findByName(name));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('color:write')")
-
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ColorDTO dto) {
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @RequestBody ColorDTO dto
+    ) {
+
         Color color = colorMapper.toColor(dto);
+
         Color updateColor = colorService.update(id, color);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(colorMapper.toColorDTO(updateColor));
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(colorMapper.toColorDTO(updateColor));
     }
 
+    //    @PreAuthorize("hasRole('Admin')")
     @PreAuthorize("hasAnyAuthority('color:write')")
-
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        colorService.delete(id);
-        return ResponseEntity.ok(ResponseUtil.deleteSuccess("color", id));
-    }
 
+        colorService.delete(id);
+
+        return ResponseEntity.ok(
+                ResponseUtil.deleteSuccess("color", id)
+        );
+    }
 }

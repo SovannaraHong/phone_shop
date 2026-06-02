@@ -4,6 +4,7 @@ import com.phone_shop.phoneshop.dto.reports.ExpenseReportDTO;
 import com.phone_shop.phoneshop.dto.reports.ProductReportDTO;
 import com.phone_shop.phoneshop.entity.Product;
 import com.phone_shop.phoneshop.entity.ProductHistoryImport;
+import com.phone_shop.phoneshop.entity.Sale;
 import com.phone_shop.phoneshop.entity.SaleDetail;
 import com.phone_shop.phoneshop.repository.ProductHistoryImportRepository;
 import com.phone_shop.phoneshop.repository.ProductRepository;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,12 +64,23 @@ public class ReportServiceImpl implements ReportService {
             Product product = productMap.get(entry.getKey().getId());
             ProductReportDTO productReportDTO = new ProductReportDTO();
             List<SaleDetail> sdList = entry.getValue();
+            LocalDateTime latestSoldDate = sdList.stream()
+                    .map(SaleDetail::getSale)
+                    .filter(Objects::nonNull)
+                    .map(Sale::getSoldDate)
+                    .filter(Objects::nonNull)
+                    .max(LocalDateTime::compareTo)
+                    .orElse(null);
+
+
             Integer unit = sdList.stream().map(SaleDetail::getUnitSale).reduce(0, Integer::sum);
             double amount = sdList.stream().mapToDouble(sd -> sd.getUnitSale() * sd.getAmount().doubleValue()).sum();
             productReportDTO.setProductId(product.getId());
             productReportDTO.setProductName(product.getName());
             productReportDTO.setProductUnit(unit);
             productReportDTO.setTotalAmount(BigDecimal.valueOf(amount));
+            productReportDTO.setSoldDate(latestSoldDate);
+            productReportDTO.setImagePath(product.getImagePath());
             lists.add(productReportDTO);
         }
 
@@ -143,17 +156,40 @@ public class ReportServiceImpl implements ReportService {
             Integer unitExpense = pdList.stream()
                     .map(ProductHistoryImport::getImportUnit)
                     .reduce(0, Integer::sum);
+            LocalDateTime latestDate = pdList.stream().map(ProductHistoryImport::getImportDate)
+                    .filter(Objects::nonNull)
+                    .max(LocalDateTime::compareTo).orElse(null);
 
             ExpenseReportDTO expenseReportDTO = new ExpenseReportDTO();
             expenseReportDTO.setProductId(product.getId());
             expenseReportDTO.setProductName(product.getName());
             expenseReportDTO.setExpenseUnit(unitExpense);
             expenseReportDTO.setTotalAmount(BigDecimal.valueOf(amount));
+            expenseReportDTO.setExpenseDate(latestDate);
             expenseList.add(expenseReportDTO);
         }
 
         expenseList.sort((a, b) -> (int) (a.getProductId() - b.getProductId()));
         return expenseList;
+    }
+
+    @Override
+    public List<ProductReportDTO> getAllProductSold() {
+
+        return saleDetailRepository.findAllWithRelations()
+                .stream()
+                .map(s -> {
+                    ProductReportDTO dto = new ProductReportDTO();
+
+                    dto.setProductId(s.getProduct().getId());
+                    dto.setProductName(s.getProduct().getName());
+                    dto.setProductUnit(s.getUnitSale());
+                    dto.setTotalAmount(s.getAmount());
+                    dto.setSoldDate(s.getSale().getSoldDate());
+
+                    return dto;
+                })
+                .toList();
     }
 }
 

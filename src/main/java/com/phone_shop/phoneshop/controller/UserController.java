@@ -64,27 +64,38 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
 //
 //    }
+//    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:write')")
-
     @PostMapping("/register")
     public ResponseEntity<?> signIn(@Valid @RequestBody UserDTO userDTO) {
+
         User user = userService.createV1(userDTO);
+
         UserResponse userResponse = UserResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .userName(user.getUsername())
                 .build();
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseUtil.success(HttpStatus.CREATED, "User created Successfully", userResponse));
+                .body(ResponseUtil.success(
+                        HttpStatus.CREATED,
+                        "User created Successfully",
+                        userResponse
+                ));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:read')")
-
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
+
         User user = userService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(user);
     }
 
 //    @PreAuthorize("hasAnyAuthority('user:read')")
@@ -95,44 +106,66 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.OK).body(users);
 //    }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:write')")
-
     @PutMapping("{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserDTO userDTO
+    ) {
 
         User user = userService.update(id, userDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userMapper.toUserDTO(user));
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(userMapper.toUserDTO(user));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:read')")
-
     @GetMapping("/name/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable String username) {
+
         User user = userService.findByName(username);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(user);
     }
 
+    //    @PreAuthorize("hasRole('Admin')")
     @PreAuthorize("hasAnyAuthority('user:write')")
-
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
+
         userService.delete(id);
-        return ResponseEntity.ok(ResponseUtil.deleteSuccess("User", id));
+
+        return ResponseEntity.ok(
+                ResponseUtil.deleteSuccess("User", id)
+        );
     }
 
+
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:write')")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<?> updateStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body
+    ) {
+
         userService.updateStatus(id, body.get("status"));
+
         return ResponseEntity.ok().build();
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:write')")
-
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(
             @PathVariable Long id,
-            @RequestPart("image") MultipartFile file) throws Exception {
+            @RequestPart("image") MultipartFile file
+    ) throws Exception {
 
         User user = userService.findById(id);
 
@@ -141,18 +174,22 @@ public class UserController {
 
         // Only update the image field
         user.setImagePath(url);
+
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping
     public ResponseEntity<?> findAllUser(@RequestParam Map<String, String> params) {
+
         Page<User> users = userService.getUsers(params);
+
         PageDTO pageDTO = new PageDTO(users);
+
         return ResponseEntity.ok(pageDTO);
     }
-
 
 }

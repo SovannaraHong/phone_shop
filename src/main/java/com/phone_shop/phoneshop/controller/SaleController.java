@@ -15,19 +15,23 @@ public class SaleController {
 
     private final SaleService saleService;
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Cashier','Seller')")
     @PreAuthorize("hasAnyAuthority('sale:write')")
-
     @PostMapping
     public ResponseEntity<?> create(@RequestBody SaleDTO saleDTO) {
+
         saleService.sell(saleDTO);
+
         return ResponseEntity.ok("Sale Product Success");
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Seller')")
     @PreAuthorize("hasAnyAuthority('sale:write')")
-
     @PutMapping("{saleId}/cancel")
     public ResponseEntity<?> create(@PathVariable Long saleId) {
+
         saleService.cancelSale(saleId);
+
         return ResponseEntity.ok("cancel Product Success");
     }
 

@@ -12,6 +12,7 @@ public class LoginData {
     private Long userId;
     private String username;
     private List<String> roles;
+    private String imagePath;
     private String accessToken;
     private String refreshToken;
 

@@ -12,7 +12,7 @@ public class ProductHistoryImportResponseDTO {
     private Integer importUnit;
     private BigDecimal pricePerUnit;
     private LocalDateTime importDate;
-
+    private String conditionType;
     private Product product;
 
 

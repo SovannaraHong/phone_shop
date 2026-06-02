@@ -26,23 +26,43 @@ public class ReportController {
     @PreAuthorize("hasAnyAuthority('report:read')")
     @GetMapping("{startDate}/{endDate}")
     public ResponseEntity<?> productReport(
+
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @PathVariable LocalDateTime startDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @PathVariable LocalDateTime endDate) {
 
-        List<ProductReportDTO> list = reportService.productReportSold(startDate, endDate);
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            @PathVariable LocalDateTime endDate
+    ) {
+
+        List<ProductReportDTO> list =
+                reportService.productReportSold(startDate, endDate);
+
         return ResponseEntity.ok(list);
     }
 
+
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Accountant','Staff')")
     @PreAuthorize("hasAnyAuthority('report:read')")
     @GetMapping("expense/{startDate}/{endDate}")
     public ResponseEntity<?> expenseReport(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate startDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @PathVariable LocalDate endDate) {
-        List<ExpenseReportDTO> expenseReportDTOS = reportService.expenseReport(startDate, endDate);
-        return ResponseEntity.ok(expenseReportDTOS);
 
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            @PathVariable LocalDate startDate,
+
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            @PathVariable LocalDate endDate
+    ) {
+
+        List<ExpenseReportDTO> expenseReportDTOS =
+                reportService.expenseReport(startDate, endDate);
+
+        return ResponseEntity.ok(expenseReportDTOS);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> productReportSold() {
+        List<ProductReportDTO> allProductSold = reportService.getAllProductSold();
+        return ResponseEntity.ok(allProductSold);
     }
 
 }

@@ -33,19 +33,22 @@ public class ProductController {
 //    public ResponseEntity<?> getAllProducts() {
 //        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
 //    }
+//    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('product:read')")
     @GetMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(id));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('product:read')")
-
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductByName(name));
     }
 
+
+    //    @PreAuthorize("hasRole('Admin')")
     @PreAuthorize("hasAnyAuthority('product:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -53,8 +56,9 @@ public class ProductController {
         return ResponseEntity.ok(ResponseUtil.deleteSuccess("Product", id));
     }
 
-    @PreAuthorize("hasAnyAuthority('product:write')")
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
+    @PreAuthorize("hasAnyAuthority('product:write')")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ProductDTO dto) {
         Product product = productMapper.toProduct(dto);
@@ -62,21 +66,32 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toResponse(products));
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @PostMapping("{productId}/setPrice")
-    public ResponseEntity<?> importPrice(@PathVariable("productId") Long id, @Valid @RequestBody PriceDTO priceDTO) {
+    public ResponseEntity<?> importPrice(
+            @PathVariable("productId") Long id,
+            @Valid @RequestBody PriceDTO priceDTO
+    ) {
+
         productService.setSellPrice(id, priceDTO.getPrice());
+
         return ResponseEntity.ok("Price updated successfully");
-
-
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
     @PreAuthorize("hasAnyAuthority('product:write')")
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(
+            @Valid @RequestBody ProductDTO dto,
+            @PathVariable Long id
+    ) {
+
         Product product = productService.updateProduct(dto, id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productMapper.toResponse(product));
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(productMapper.toResponse(product));
     }
 //    @PutMapping("{id}")
 //    public ResponseEntity<?> update(@Valid @RequestBody ProductDTO dto, @PathVariable Long id) {
@@ -93,19 +108,24 @@ public class ProductController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(errorResponse);
 //
 //    }
+//    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
     @PreAuthorize("hasAnyAuthority('product:write')")
     @PostMapping("uploadProduct")
     public ResponseEntity<?> uploadProduct(@RequestParam("file") MultipartFile file) {
+
         Map<Integer, String> errors = productService.uploadProduct(file);
 
         if (errors.isEmpty()) {
+
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     Map.of(
                             "success", true,
                             "message", "All products uploaded successfully"
                     )
             );
+
         } else {
+
             return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(
                     Map.of(
                             "success", false,
@@ -116,20 +136,23 @@ public class ProductController {
         }
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @PostMapping("importProduct")
     public ResponseEntity<?> importProduct(@Valid @RequestBody ImportProductDTO dto) {
+
         productService.importProduct(dto);
+
         return ResponseEntity.ok("Import Product Sucesss");
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
     @PreAuthorize("hasAnyAuthority('product:write')")
-
     @PutMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(
             @PathVariable Long id,
-            @RequestPart("file") MultipartFile file) throws Exception {
+            @RequestPart("file") MultipartFile file
+    ) throws Exception {
 
         Product product = productService.findById(id);
 
@@ -144,15 +167,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('product:read')")
-
     @GetMapping
     public ResponseEntity<?> getProduct(@RequestParam Map<String, String> params) {
 
         Page<ProductResponseDTO> products = productService.getProducts(params);
-//        PageDTO pageDTO = new PageDTO(products);
 
         return ResponseEntity.ok(new PageDTO<>(products));
     }
-
 }

@@ -35,23 +35,29 @@ public class BrandController {
     private final ModelService modelService;
     private final ModelEntityMapper modelEntityMapper;
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('brand:write')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody BrandDto brandDto) {
 
         Brand brand = brandMapper.toBrand(brandDto);
         Brand saved = brandService.create(brand);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(brandMapper.toBrandDto(saved));
     }
 
+
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('brand:read')")
+
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable(name = "id") Long brandId) {
-        Brand brand = brandService.findById(brandId);
-        return ResponseEntity.ok(brandMapper.toBrandDto(brand));
 
+        Brand brand = brandService.findById(brandId);
+
+        return ResponseEntity.ok(brandMapper.toBrandDto(brand));
     }
 
 //    @GetMapping
@@ -71,41 +77,63 @@ public class BrandController {
 //        );
 //    }
 
+
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('brand:read')")
+
     @GetMapping("{id}/models")
     public ResponseEntity<?> getModelByBrandId(@PathVariable(name = "id") Long brandId) {
+
         List<Model> modelByBrandId = modelService.getModelByBrandId(brandId);
-        List<ModelDTO> list = modelByBrandId.stream().map(modelEntityMapper::toModelDTO).toList();
+
+        List<ModelDTO> list = modelByBrandId
+                .stream()
+                .map(modelEntityMapper::toModelDTO)
+                .toList();
+
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock','Cashier','Seller','Staff')")
     @PreAuthorize("hasAnyAuthority('brand:read')")
+
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params) {
+
         Page<Brand> brands = brandService.getBrands(params);
+
         PageDTO pageDTO = new PageDTO(brands);
 
-//        List<BrandDto> list = brandService.getBrands(params)
-//                .stream()
-//                .map(brandMapper::toBrandDto)
-//                .toList();
         return ResponseEntity.ok(pageDTO);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager')")
     @PreAuthorize("hasAnyAuthority('brand:write')")
+
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BrandDto brandDto) {
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @RequestBody BrandDto brandDto
+    ) {
+
         Brand brand1 = brandMapper.toBrand(brandDto);
+
         Brand brand = brandService.updateBrand(id, brand1);
+
         return ResponseEntity.ok(brandMapper.toBrandDto(brand));
     }
 
+
+    //    @PreAuthorize("hasRole('Admin')")
     @PreAuthorize("hasAnyAuthority('brand:write')")
+
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+
         brandService.delete(id);
-        return ResponseEntity.ok(ResponseUtil.deleteSuccess("brand", id));
+
+        return ResponseEntity.ok(
+                ResponseUtil.deleteSuccess("brand", id)
+        );
     }
-
-
 }

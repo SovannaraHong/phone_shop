@@ -21,17 +21,30 @@ import java.util.Map;
 public class ProductHistoryImportController {
     private final ProductHistoryImportService productHistoryImportService;
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
+//    @PreAuthorize("hasAnyAuthority('productHistory:write')")
     @PostMapping
     public ResponseEntity<?> importProduct(@Valid @RequestBody ImportProductDTO dto) {
-        ProductHistoryImport productHistoryImport = productHistoryImportService.importProduct(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productHistoryImport);
+
+        ProductHistoryImport productHistoryImport =
+                productHistoryImportService.importProduct(dto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(productHistoryImport);
     }
 
+    //    @PreAuthorize("hasAnyRole('Admin','Manager','Stock')")
+//    @PreAuthorize("hasAnyAuthority('productHistory:read')")
     @GetMapping
-    public ResponseEntity<PageDTO<ProductHistoryImportResponseDTO>> getProductHistoryImport(Map<String, String> params) {
-        Page<ProductHistoryImportResponseDTO> productHistory = productHistoryImportService.getProductHistory(params);
-        return ResponseEntity.ok(new PageDTO<>(productHistory));
+    public ResponseEntity<PageDTO<ProductHistoryImportResponseDTO>> getProductHistoryImport(
+            @RequestParam Map<String, String> params
+    ) {
 
+        Page<ProductHistoryImportResponseDTO> productHistory =
+                productHistoryImportService.getProductHistory(params);
+
+        return ResponseEntity.ok(new PageDTO<>(productHistory));
     }
 
 

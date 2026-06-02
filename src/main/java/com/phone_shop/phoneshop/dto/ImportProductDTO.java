@@ -24,5 +24,7 @@ public class ImportProductDTO {
 
     @NotNull(message = "Import Date cannot be null")
     private LocalDateTime importDate;
+    @NotNull(message = "condition cannot be null")
+    private String conditionType;
 }
 

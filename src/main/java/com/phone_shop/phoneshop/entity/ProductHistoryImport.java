@@ -25,6 +25,8 @@ public class ProductHistoryImport {
     @JoinColumn(name = "product_id")
     private Product product;
     @Column(name = "import_Date")
-
     private LocalDateTime importDate;
+
+    @Column(name = "condition_type")
+    private String conditionType;
 }

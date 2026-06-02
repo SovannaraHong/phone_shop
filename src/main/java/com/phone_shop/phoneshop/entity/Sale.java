@@ -22,7 +22,7 @@ public class Sale {
     @PrePersist
     public void prePersist() {
         if (soldDate == null) {
-            soldDate = LocalDateTime.now();  // ← auto set soldDate on every new Sale
+            soldDate = LocalDateTime.now();
         }
     }
 
